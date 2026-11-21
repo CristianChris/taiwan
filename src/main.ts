@@ -21,8 +21,8 @@ interface Route {
   min: number;
   gvia: [number, number][];
 }
-const drives = drivesData as Drive[];
-const routes = routesData as Record<string, Route>;
+const drives = drivesData as unknown as Drive[];
+const routes = routesData as unknown as Record<string, Route>;
 
 function navUrl(d: Drive) {
   const ll = (p: [number, number]) => `${p[0]},${p[1]}`;
