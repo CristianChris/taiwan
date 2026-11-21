@@ -1,4 +1,6 @@
+import 'leaflet/dist/leaflet.css';
 import './style.css';
+import L from 'leaflet';
 import { trip, flights, days, places, tips, type Leg, type Stop, type Day, type Mode } from './trip';
 
 const app = document.getElementById('app')!;
@@ -12,7 +14,10 @@ const MODE_ICON: Record<Mode, string> = {
   walk: '🚶',
   taxi: '🚕',
   boat: '⛴️',
+  car: '🚗',
 };
+
+const DAY_COLORS = ['#c8102e', '#2f7d4f', '#1f6fb2', '#b7791f', '#7b3fa0'];
 
 const esc = (s: string) =>
   s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
@@ -63,7 +68,7 @@ const store = {
 const doneKey = (date: string, i: number) => `tw26:done:${date}:${i}`;
 
 // ── Routing: #plan/<date> | #explore | #tips ──
-type View = { name: 'plan'; date: string } | { name: 'explore' } | { name: 'tips' };
+type View = { name: 'plan'; date: string } | { name: 'map' } | { name: 'explore' } | { name: 'tips' };
 
 function defaultDay() {
   const t = taiwanToday();
@@ -73,6 +78,7 @@ function defaultDay() {
 function parseHash(): View {
   const [name, arg] = location.hash.replace(/^#\/?/, '').split('/');
   if (name === 'explore') return { name: 'explore' };
+  if (name === 'map') return { name: 'map' };
   if (name === 'tips') return { name: 'tips' };
   const date = days.some((d) => d.date === arg) ? arg : defaultDay();
   return { name: 'plan', date };
@@ -244,9 +250,73 @@ function tipsView() {
     </section>`;
 }
 
+
+// ── Map tab: every stop with coordinates, one colour per day, lines = order of the day ──
+let leafletMap: L.Map | null = null;
+let mapDay = 'all';
+
+function mapView() {
+  const chips = [
+    `<button class="filter${mapDay === 'all' ? ' is-active' : ''}" data-mapday="all">All days</button>`,
+    ...days.map(
+      (d, i) =>
+        `<button class="filter${mapDay === d.date ? ' is-active' : ''}" data-mapday="${d.date}"><span class="dot" style="background:${DAY_COLORS[i % DAY_COLORS.length]}"></span>Day ${i + 1}</button>`,
+    ),
+  ].join('');
+  return `
+    <section class="page map-page">
+      <div class="filters">${chips}</div>
+      <div id="map" role="region" aria-label="Map of the trip"></div>
+      <p class="muted small">Lines connect each day's stops in order (straight lines, not the actual road) — tap a pin, then "Directions" for the real route.</p>
+    </section>`;
+}
+
+function initMap() {
+  const el = document.getElementById('map');
+  if (!el) return;
+  const m = L.map(el, { zoomControl: true, attributionControl: true });
+  leafletMap = m;
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 18,
+    attribution: '&copy; OpenStreetMap contributors',
+  }).addTo(m);
+
+  const bounds: L.LatLngTuple[] = [];
+  days.forEach((d, i) => {
+    if (mapDay !== 'all' && mapDay !== d.date) return;
+    const color = DAY_COLORS[i % DAY_COLORS.length];
+    // start the line where the previous day ended, so travel between days shows too
+    const prevEnd = i > 0 ? [...days[i - 1].stops].reverse().find((s) => s.at)?.at : undefined;
+    const path: L.LatLngTuple[] = prevEnd ? [prevEnd] : [];
+    const seen = new Set<string>();
+    d.stops.forEach((s) => {
+      if (!s.at) return;
+      const last = path[path.length - 1];
+      if (!last || last[0] !== s.at[0] || last[1] !== s.at[1]) path.push(s.at);
+      bounds.push(s.at);
+      const key = s.at.join(',');
+      const label = `<strong>Day ${i + 1} · ${esc(s.time)}</strong><br>${esc(s.title)}<br>
+        <a href="#plan/${d.date}">Open day</a>${s.map ? ` · <a href="${mapUrl(s.map)}" target="_blank" rel="noopener">Google Maps ↗</a>` : ''}`;
+      if (seen.has(key)) return; // one pin per place per day
+      seen.add(key);
+      L.circleMarker(s.at, { radius: 8, color: '#fff', weight: 2, fillColor: color, fillOpacity: 1 })
+        .addTo(m)
+        .bindPopup(label);
+    });
+    if (path.length > 1) L.polyline(path, { color, weight: 3, opacity: 0.8, dashArray: '6 6' }).addTo(m);
+  });
+  if (bounds.length) m.fitBounds(bounds, { padding: [24, 24] });
+  else m.setView([23.7, 121], 7);
+}
+
 function render() {
   const view = parseHash();
-  const body = view.name === 'plan' ? planView(view.date) : view.name === 'explore' ? exploreView() : tipsView();
+  if (leafletMap) {
+    leafletMap.remove();
+    leafletMap = null;
+  }
+  const body =
+    view.name === 'plan' ? planView(view.date) : view.name === 'map' ? mapView() : view.name === 'explore' ? exploreView() : tipsView();
   app.innerHTML = `
     <header class="top">
       <div>
@@ -258,10 +328,12 @@ function render() {
     <main>${body}</main>
     <nav class="tabs" aria-label="Sections">
       <a href="#plan/${view.name === 'plan' ? view.date : defaultDay()}" class="${view.name === 'plan' ? 'is-active' : ''}"><span>🗓️</span>Plan</a>
+      <a href="#map" class="${view.name === 'map' ? 'is-active' : ''}"><span>🗺️</span>Map</a>
       <a href="#explore" class="${view.name === 'explore' ? 'is-active' : ''}"><span>📍</span>Explore</a>
       <a href="#tips" class="${view.name === 'tips' ? 'is-active' : ''}"><span>💡</span>Tips</a>
     </nav>`;
   app.querySelector('.chip.is-active')?.scrollIntoView({ inline: 'center', block: 'nearest' });
+  if (view.name === 'map') initMap();
 }
 
 app.addEventListener('click', (e) => {
@@ -270,6 +342,12 @@ app.addEventListener('click', (e) => {
   if (tick) {
     const k = tick.dataset.key!;
     store.set(k, store.get(k) === '1' ? null : '1');
+    render();
+    return;
+  }
+  const md = t.closest<HTMLButtonElement>('[data-mapday]');
+  if (md) {
+    mapDay = md.dataset.mapday!;
     render();
     return;
   }

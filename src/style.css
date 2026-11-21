@@ -275,7 +275,7 @@ main {
 }
 .tabs a {
   flex: 1;
-  max-width: 200px;
+  max-width: 160px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -287,3 +287,17 @@ main {
 }
 .tabs a span { font-size: 1.3rem; line-height: 1.2; }
 .tabs a.is-active { color: var(--accent); }
+
+/* Map tab */
+.map-page .filters { margin-top: 0; }
+#map {
+  height: calc(100vh - 260px);
+  min-height: 360px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  overflow: hidden;
+  z-index: 0;
+}
+.dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+.leaflet-popup-content { font: 14px/1.4 system-ui, sans-serif; }
+.leaflet-popup-content a { color: #c8102e; }
