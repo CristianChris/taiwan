@@ -384,22 +384,22 @@ export const days: Day[] = [
   {
     date: '2026-12-01',
     title: 'Mountain drive to Sun Moon Lake',
-    area: 'Alishan → Highway 21 → Sun Moon Lake',
+    area: 'Alishan → Ruili → Zhushan → Sun Moon Lake',
     summary:
-      "Drive across the mountains via Tataka on one of Taiwan's most scenic roads to Sun Moon Lake. Afternoon lake cruise and temples, evening at Ita Thao's lakeside night street.",
-    heads_up: 'About 3.5 h of mountain driving — leave by 08:30 and take breaks. Roads can close after landslides/heavy rain; check road status (1968 app) before leaving. Overnight at Sun Moon Lake.',
+      "Drive down from Alishan through the tea and bamboo country of Ruili and Zhushan to Sun Moon Lake. Afternoon lake cruise and temples, evening at Ita Thao's lakeside night street.",
+    heads_up: 'About 3 h of mountain driving (≈113 km) — leave by 08:30 and take breaks. The exact route is on the Map tab. Roads can close after landslides/heavy rain; check road status (1968 app) before leaving. Overnight at Sun Moon Lake.',
     stops: [
       {
         time: '08:30',
         title: 'Check out & drive to Sun Moon Lake',
         details:
-          'Highway 18 → Tataka → Highway 21 through Dongpu and Xinyi (plum & grape villages), then up to the lake. Stop at Xinyi for a coffee / plum wine shop break.',
+          'Hwy 18 down to Shizhuo, then small county roads through Ruili (tea terraces, bamboo forest) to Zhushan, and Hwy 16 / 21 up to the lake. Stop in Zhushan for a break. The road via Tataka and Hwy 21 is shorter on paper, but the online route planner does not use it, so check that it is open before you take it.',
         map: 'Shuishe Visitor Center',
         at: [23.8662, 120.91],
         getThere: {
           mode: 'car',
-          how: 'Hwy 18 → Tataka → Hwy 21 north → Sun Moon Lake',
-          duration: '≈3h30 (≈130 km)',
+          how: 'Hwy 18 → 嘉155 / 149甲 / 149 (Ruili) → Hwy 3 (Zhushan) → Hwy 16 → Hwy 21',
+          duration: '≈3h10 (≈113 km)',
           from: 'Alishan Forest Recreation Area',
           to: 'Shuishe Visitor Center',
         },
@@ -444,7 +444,7 @@ export const days: Day[] = [
       },
     ],
     alternatives: [
-      'Roads closed or rainy? Drive back down to Chiayi and take Freeway 3 → Freeway 6 to Sun Moon Lake (≈3h, easier driving).',
+      'Prefer bigger roads? Drive Hwy 18 back down to Chiayi, then Freeway 3 → Freeway 6 to Sun Moon Lake (≈3h, easier driving, fewer curves).',
     ],
   },
   {
@@ -467,10 +467,10 @@ export const days: Day[] = [
       {
         time: '10:30',
         title: 'Check out, drive to Taichung',
-        details: 'Freeway 6 → Freeway 3 → HSR Taichung station.',
+        details: 'Drive to HSR Taichung station — exact route on the Map tab.',
         map: 'HSR Taichung Station',
         at: [24.1121, 120.6157],
-        getThere: { mode: 'car', how: 'Drive Freeway 6 → Freeway 3', duration: '≈1h30', from: 'Shuishe Visitor Center', to: 'HSR Taichung Station' },
+        getThere: { mode: 'car', how: 'Hwy 21 → Hwy 14 (Puli) → Freeway 6 → Freeway 3', duration: '≈1h05 (≈64 km)', from: 'Shuishe Visitor Center', to: 'HSR Taichung Station' },
       },
       {
         time: '12:30',

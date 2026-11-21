@@ -2,6 +2,48 @@ import 'leaflet/dist/leaflet.css';
 import './style.css';
 import L from 'leaflet';
 import { trip, flights, days, places, tips, type Leg, type Stop, type Day, type Mode } from './trip';
+import drivesData from './drives.json';
+import routesData from './routes.generated.json';
+
+interface Drive {
+  id: string;
+  day: string;
+  label: string;
+  from: [number, number];
+  to: [number, number];
+  roads: string;
+  km: number;
+  time: string;
+}
+interface Route {
+  line: [number, number][];
+  km: number;
+  min: number;
+  gvia: [number, number][];
+}
+const drives = drivesData as Drive[];
+const routes = routesData as Record<string, Route>;
+
+function navUrl(d: Drive) {
+  const ll = (p: [number, number]) => `${p[0]},${p[1]}`;
+  const via = routes[d.id]?.gvia ?? [];
+  return (
+    `https://www.google.com/maps/dir/?api=1&origin=${ll(d.from)}&destination=${ll(d.to)}&travelmode=driving` +
+    (via.length ? `&waypoints=${encodeURIComponent(via.map(ll).join('|'))}` : '')
+  );
+}
+
+function driveHtml(d: Drive) {
+  const i = days.findIndex((x) => x.date === d.day);
+  const color = DAY_COLORS[i % DAY_COLORS.length];
+  return `
+    <article class="drive" style="border-left-color:${color}">
+      <div class="drive-top"><strong>🚗 ${esc(d.label)}</strong><span class="muted">Day ${i + 1}</span></div>
+      <div class="drive-meta">${d.km} km · ${esc(d.time)}</div>
+      <p>${esc(d.roads)}</p>
+      <a class="btn" href="${navUrl(d)}" target="_blank" rel="noopener">Navigate in Google Maps ↗</a>
+    </article>`;
+}
 
 const app = document.getElementById('app')!;
 
@@ -23,8 +65,8 @@ const esc = (s: string) =>
   s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
 
 const mapUrl = (q: string) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q + (/[一-鿿]/.test(q) ? '' : ', Taiwan'))}`;
-const dirUrl = (from: string, to: string) =>
-  `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(from + ', Taiwan')}&destination=${encodeURIComponent(to + ', Taiwan')}&travelmode=transit`;
+const dirUrl = (from: string, to: string, mode = 'transit') =>
+  `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(from + ', Taiwan')}&destination=${encodeURIComponent(to + ', Taiwan')}&travelmode=${mode}`;
 
 // ── Dates (trip runs in Taiwan time, UTC+8) ──
 function taiwanToday(): string {
@@ -88,7 +130,7 @@ function parseHash(): View {
 function legHtml(leg: Leg) {
   const dir =
     leg.from && leg.to
-      ? `<a class="btn btn-ghost" href="${dirUrl(leg.from, leg.to)}" target="_blank" rel="noopener">Directions ↗</a>`
+      ? `<a class="btn btn-ghost" href="${dirUrl(leg.from, leg.to, leg.mode === 'car' || leg.mode === 'taxi' ? 'driving' : leg.mode === 'walk' ? 'walking' : 'transit')}" target="_blank" rel="noopener">Directions ↗</a>`
       : '';
   return `
     <div class="leg">
@@ -267,7 +309,11 @@ function mapView() {
     <section class="page map-page">
       <div class="filters">${chips}</div>
       <div id="map" role="region" aria-label="Map of the trip"></div>
-      <p class="muted small">Lines connect each day's stops in order (straight lines, not the actual road) — tap a pin, then "Directions" for the real route.</p>
+      <p class="muted small">Solid lines are the driving routes on real roads. Dashed lines just connect the other stops in order (train, MRT, walking). Tap a pin or a route for details.</p>
+      ${(() => {
+        const list = drives.filter((d) => mapDay === 'all' || d.day === mapDay);
+        return list.length ? `<h3 class="drives-title">Driving routes</h3><div class="drives">${list.map(driveHtml).join('')}</div>` : '';
+      })()}
     </section>`;
 }
 
@@ -304,6 +350,19 @@ function initMap() {
         .bindPopup(label);
     });
     if (path.length > 1) L.polyline(path, { color, weight: 3, opacity: 0.8, dashArray: '6 6' }).addTo(m);
+  });
+  drives.forEach((d) => {
+    if (mapDay !== 'all' && mapDay !== d.day) return;
+    const r = routes[d.id];
+    if (!r) return;
+    const i = days.findIndex((x) => x.date === d.day);
+    L.polyline(r.line, { color: '#fff', weight: 8, opacity: 0.9 }).addTo(m);
+    L.polyline(r.line, { color: DAY_COLORS[i % DAY_COLORS.length], weight: 5, opacity: 1 })
+      .addTo(m)
+      .bindPopup(
+        `<strong>🚗 ${esc(d.label)}</strong><br>${d.km} km · ${esc(d.time)}<br>${esc(d.roads)}<br><a href="${navUrl(d)}" target="_blank" rel="noopener">Navigate in Google Maps ↗</a>`,
+      );
+    r.line.forEach((p) => bounds.push(p));
   });
   if (bounds.length) m.fitBounds(bounds, { padding: [24, 24] });
   else m.setView([23.7, 121], 7);
