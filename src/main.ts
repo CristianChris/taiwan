@@ -1,0 +1,287 @@
+import './style.css';
+import { trip, flights, days, places, tips, type Leg, type Stop, type Day, type Mode } from './trip';
+
+const app = document.getElementById('app')!;
+
+const MODE_ICON: Record<Mode, string> = {
+  flight: '✈️',
+  mrt: '🚇',
+  train: '🚆',
+  hsr: '🚄',
+  bus: '🚌',
+  walk: '🚶',
+  taxi: '🚕',
+  boat: '⛴️',
+};
+
+const esc = (s: string) =>
+  s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
+
+const mapUrl = (q: string) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q + (/[一-鿿]/.test(q) ? '' : ', Taiwan'))}`;
+const dirUrl = (from: string, to: string) =>
+  `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(from + ', Taiwan')}&destination=${encodeURIComponent(to + ', Taiwan')}&travelmode=transit`;
+
+// ── Dates (trip runs in Taiwan time, UTC+8) ──
+function taiwanToday(): string {
+  return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Taipei' }).format(new Date());
+}
+function fmtDay(iso: string, opts: Intl.DateTimeFormatOptions) {
+  return new Date(iso + 'T12:00:00+08:00').toLocaleDateString('en-GB', { timeZone: 'Asia/Taipei', ...opts });
+}
+function daysBetween(a: string, b: string) {
+  return Math.round((Date.parse(b) - Date.parse(a)) / 86_400_000);
+}
+
+function countdown(): string {
+  const today = taiwanToday();
+  if (today < trip.start) {
+    const n = daysBetween(today, trip.start);
+    return n === 1 ? 'Tomorrow! ✈️' : `${n} days to go`;
+  }
+  if (today > trip.end) return 'Trip complete 🎉';
+  const i = days.findIndex((d) => d.date === today);
+  return `Day ${i + 1} of ${days.length} — enjoy!`;
+}
+
+// ── "Done" ticks, stored per device ──
+const store = {
+  get(k: string) {
+    try {
+      return localStorage.getItem(k);
+    } catch {
+      return null;
+    }
+  },
+  set(k: string, v: string | null) {
+    try {
+      v === null ? localStorage.removeItem(k) : localStorage.setItem(k, v);
+    } catch {
+      /* private mode: ticks just won't persist */
+    }
+  },
+};
+const doneKey = (date: string, i: number) => `tw26:done:${date}:${i}`;
+
+// ── Routing: #plan/<date> | #explore | #tips ──
+type View = { name: 'plan'; date: string } | { name: 'explore' } | { name: 'tips' };
+
+function defaultDay() {
+  const t = taiwanToday();
+  return days.some((d) => d.date === t) ? t : days[0].date;
+}
+
+function parseHash(): View {
+  const [name, arg] = location.hash.replace(/^#\/?/, '').split('/');
+  if (name === 'explore') return { name: 'explore' };
+  if (name === 'tips') return { name: 'tips' };
+  const date = days.some((d) => d.date === arg) ? arg : defaultDay();
+  return { name: 'plan', date };
+}
+
+// ── Render pieces ──
+function legHtml(leg: Leg) {
+  const dir =
+    leg.from && leg.to
+      ? `<a class="btn btn-ghost" href="${dirUrl(leg.from, leg.to)}" target="_blank" rel="noopener">Directions ↗</a>`
+      : '';
+  return `
+    <div class="leg">
+      <span class="leg-icon" aria-hidden="true">${MODE_ICON[leg.mode]}</span>
+      <div class="leg-body">
+        <div class="leg-how">${esc(leg.how)}</div>
+        <div class="leg-meta">${esc(leg.duration)}${leg.cost ? ` · ${esc(leg.cost)}` : ''}</div>
+      </div>
+      ${dir}
+    </div>`;
+}
+
+function stopHtml(day: Day, s: Stop, i: number) {
+  const done = store.get(doneKey(day.date, i)) === '1';
+  const badges = [
+    s.optional ? '<span class="badge badge-opt">optional</span>' : '',
+    s.guess ? '<span class="badge badge-guess" title="An assumption — please check">guess</span>' : '',
+  ].join('');
+  return `
+    ${s.getThere ? legHtml(s.getThere) : ''}
+    <article class="stop${done ? ' is-done' : ''}${s.optional ? ' is-optional' : ''}">
+      <div class="stop-time">${esc(s.time)}</div>
+      <div class="stop-main">
+        <h3>${esc(s.title)} ${badges}</h3>
+        <p>${esc(s.details)}</p>
+        ${s.tips?.length ? `<ul class="stop-tips">${s.tips.map((t) => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}
+        <div class="stop-actions">
+          ${s.map ? `<a class="btn" href="${mapUrl(s.map)}" target="_blank" rel="noopener">📍 Map</a>` : ''}
+          <button class="btn btn-ghost tick" data-key="${doneKey(day.date, i)}" aria-pressed="${done}">
+            ${done ? '✓ Done' : 'Mark done'}
+          </button>
+        </div>
+      </div>
+    </article>`;
+}
+
+function planView(date: string) {
+  const day = days.find((d) => d.date === date)!;
+  const idx = days.indexOf(day);
+  const today = taiwanToday();
+  const chips = days
+    .map(
+      (d, i) => `
+      <a class="chip${d.date === date ? ' is-active' : ''}${d.date === today ? ' is-today' : ''}" href="#plan/${d.date}">
+        <span class="chip-day">Day ${i + 1}</span>
+        <span class="chip-date">${fmtDay(d.date, { weekday: 'short', day: 'numeric' })}</span>
+      </a>`,
+    )
+    .join('');
+
+  const flightCard =
+    idx === 0 || idx === days.length - 1
+      ? (() => {
+          const f = idx === 0 ? flights[0] : flights[1];
+          return `
+        <div class="flight">
+          <div class="flight-code">✈️ ${esc(f.airline)} ${esc(f.code)}</div>
+          <div class="flight-route">${esc(f.from)} → ${esc(f.to)}</div>
+          <div class="flight-times">Departs ${esc(f.depart)} · Arrives ${esc(f.arrive)}</div>
+          ${f.note ? `<div class="flight-note">${esc(f.note)}</div>` : ''}
+        </div>`;
+        })()
+      : '';
+
+  return `
+    <nav class="chips" aria-label="Days">${chips}</nav>
+    <section class="day">
+      <header class="day-head">
+        <div class="day-kicker">Day ${idx + 1} · ${fmtDay(day.date, { weekday: 'long', day: 'numeric', month: 'long' })}</div>
+        <h2>${esc(day.title)}</h2>
+        <div class="day-area">${esc(day.area)}</div>
+        <p class="day-summary">${esc(day.summary)}</p>
+        ${day.heads_up ? `<div class="callout">💡 ${esc(day.heads_up)}</div>` : ''}
+      </header>
+      ${flightCard}
+      <div class="timeline">${day.stops.map((s, i) => stopHtml(day, s, i)).join('')}</div>
+      ${
+        day.alternatives?.length
+          ? `<section class="alts"><h3>Swap-in ideas</h3><ul>${day.alternatives.map((a) => `<li>${esc(a)}</li>`).join('')}</ul></section>`
+          : ''
+      }
+      <div class="pager">
+        ${idx > 0 ? `<a class="btn btn-ghost" href="#plan/${days[idx - 1].date}">← Day ${idx}</a>` : '<span></span>'}
+        ${idx < days.length - 1 ? `<a class="btn btn-ghost" href="#plan/${days[idx + 1].date}">Day ${idx + 2} →</a>` : ''}
+      </div>
+    </section>`;
+}
+
+let exploreFilter = 'All';
+function exploreView() {
+  const kinds = ['All', 'Planned', 'Extra ideas', ...new Set(places.map((p) => p.kind))];
+  const list = places.filter((p) =>
+    exploreFilter === 'All'
+      ? true
+      : exploreFilter === 'Planned'
+        ? !!p.day
+        : exploreFilter === 'Extra ideas'
+          ? !p.day
+          : p.kind === exploreFilter,
+  );
+  return `
+    <section class="page">
+      <h2>Things to do</h2>
+      <p class="muted">Everything in the plan, plus extra ideas if you have spare time or want to swap something out.</p>
+      <div class="filters">
+        ${kinds.map((k) => `<button class="filter${k === exploreFilter ? ' is-active' : ''}" data-filter="${esc(k)}">${esc(k)}</button>`).join('')}
+      </div>
+      <div class="cards">
+        ${list
+          .map((p) => {
+            const di = p.day ? days.findIndex((d) => d.date === p.day) : -1;
+            return `
+            <article class="card">
+              <div class="card-top">
+                <span class="badge">${esc(p.kind)}</span>
+                ${di >= 0 ? `<a class="badge badge-day" href="#plan/${p.day}">Day ${di + 1}</a>` : '<span class="badge badge-idea">Extra idea</span>'}
+              </div>
+              <h3>${esc(p.name)}</h3>
+              <p>${esc(p.why)}</p>
+              <div class="card-foot">
+                <span class="muted">${esc(p.area)} · ${esc(p.time)}</span>
+                <a class="btn" href="${mapUrl(p.map)}" target="_blank" rel="noopener">📍 Map</a>
+              </div>
+            </article>`;
+          })
+          .join('')}
+      </div>
+    </section>`;
+}
+
+function tipsView() {
+  return `
+    <section class="page">
+      <h2>Good to know</h2>
+      <div class="callout">🏨 <strong>Base:</strong> ${esc(trip.base.name)}${trip.base.guess ? ' <span class="badge badge-guess">guess</span>' : ''}<br />${esc(trip.base.note)}</div>
+      <div class="flights">
+        ${flights
+          .map(
+            (f) => `
+          <div class="flight">
+            <div class="flight-code">✈️ ${esc(f.airline)} ${esc(f.code)}</div>
+            <div class="flight-route">${esc(f.from)} → ${esc(f.to)}</div>
+            <div class="flight-times">Departs ${esc(f.depart)} · Arrives ${esc(f.arrive)}</div>
+            ${f.note ? `<div class="flight-note">${esc(f.note)}</div>` : ''}
+          </div>`,
+          )
+          .join('')}
+      </div>
+      ${tips
+        .map(
+          (t) => `
+        <section class="tip">
+          <h3><span aria-hidden="true">${t.icon}</span> ${esc(t.title)}</h3>
+          <ul>${t.points.map((p) => `<li>${esc(p)}</li>`).join('')}</ul>
+        </section>`,
+        )
+        .join('')}
+      <p class="muted small">Times, prices and opening hours marked ≈ are estimates — double-check on Google Maps before you go.</p>
+    </section>`;
+}
+
+function render() {
+  const view = parseHash();
+  const body = view.name === 'plan' ? planView(view.date) : view.name === 'explore' ? exploreView() : tipsView();
+  app.innerHTML = `
+    <header class="top">
+      <div>
+        <h1>🇹🇼 ${esc(trip.title)}</h1>
+        <div class="sub">${esc(trip.subtitle)}</div>
+      </div>
+      <div class="count">${countdown()}</div>
+    </header>
+    <main>${body}</main>
+    <nav class="tabs" aria-label="Sections">
+      <a href="#plan/${view.name === 'plan' ? view.date : defaultDay()}" class="${view.name === 'plan' ? 'is-active' : ''}"><span>🗓️</span>Plan</a>
+      <a href="#explore" class="${view.name === 'explore' ? 'is-active' : ''}"><span>📍</span>Explore</a>
+      <a href="#tips" class="${view.name === 'tips' ? 'is-active' : ''}"><span>💡</span>Tips</a>
+    </nav>`;
+  app.querySelector('.chip.is-active')?.scrollIntoView({ inline: 'center', block: 'nearest' });
+}
+
+app.addEventListener('click', (e) => {
+  const t = e.target as HTMLElement;
+  const tick = t.closest<HTMLButtonElement>('.tick');
+  if (tick) {
+    const k = tick.dataset.key!;
+    store.set(k, store.get(k) === '1' ? null : '1');
+    render();
+    return;
+  }
+  const f = t.closest<HTMLButtonElement>('.filter');
+  if (f) {
+    exploreFilter = f.dataset.filter!;
+    render();
+  }
+});
+
+window.addEventListener('hashchange', () => {
+  render();
+  window.scrollTo(0, 0);
+});
+render();
