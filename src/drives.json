@@ -3,60 +3,251 @@
     "id": "chiayi-fenqihu",
     "day": "2026-11-29",
     "label": "HSR Chiayi → Fenqihu",
-    "from": [23.4596, 120.3233],
-    "to": [23.5013, 120.6955],
+    "from": [
+      23.4596,
+      120.3233
+    ],
+    "to": [
+      23.5013,
+      120.6955
+    ],
     "roads": "Expressway 82 east → Hwy 3 → Hwy 18 (Alishan Hwy) → County Rd 159甲 → 169 to Fenqihu",
     "km": 69,
-    "time": "≈1h15"
+    "time": "≈1h15",
+    "versions": [
+      "v1"
+    ]
   },
   {
     "id": "fenqihu-alishan",
     "day": "2026-11-29",
     "label": "Fenqihu → Alishan",
-    "from": [23.5013, 120.6955],
-    "to": [23.5103, 120.804],
+    "from": [
+      23.5013,
+      120.6955
+    ],
+    "to": [
+      23.5103,
+      120.804
+    ],
     "roads": "County Rd 169 back up to Hwy 18, then Hwy 18 to the Alishan gate",
     "km": 38,
-    "time": "≈1h15"
+    "time": "≈1h15",
+    "versions": [
+      "v1",
+      "v2"
+    ]
   },
   {
     "id": "alishan-tataka",
     "day": "2026-11-30",
     "label": "Alishan → Tataka",
-    "from": [23.5103, 120.804],
-    "to": [23.472, 120.889],
+    "from": [
+      23.5103,
+      120.804
+    ],
+    "to": [
+      23.472,
+      120.889
+    ],
     "roads": "Hwy 18 east to the end at Tataka visitor center",
     "km": 20,
-    "time": "≈50 min"
+    "time": "≈50 min",
+    "versions": [
+      "v1",
+      "v2"
+    ]
   },
   {
     "id": "tataka-alishan",
     "day": "2026-11-30",
     "label": "Tataka → Alishan",
-    "from": [23.472, 120.889],
-    "to": [23.5103, 120.804],
+    "from": [
+      23.472,
+      120.889
+    ],
+    "to": [
+      23.5103,
+      120.804
+    ],
     "roads": "Hwy 18 west, same road back",
     "km": 20,
-    "time": "≈50 min"
+    "time": "≈50 min",
+    "versions": [
+      "v1",
+      "v2"
+    ]
   },
   {
     "id": "alishan-sml",
     "day": "2026-12-01",
     "label": "Alishan → Sun Moon Lake",
-    "from": [23.5103, 120.804],
-    "to": [23.8662, 120.91],
+    "from": [
+      23.5103,
+      120.804
+    ],
+    "to": [
+      23.8662,
+      120.91
+    ],
     "roads": "Hwy 18 down to Shizhuo → County Rd 嘉155 / 149甲 / 149 via Ruili → Hwy 3 (Zhushan) → 151 → 139 → 投58 → Hwy 16 → Hwy 21 to the lake",
     "km": 113,
-    "time": "≈3h10"
+    "time": "≈3h10",
+    "versions": [
+      "v1",
+      "v2"
+    ]
   },
   {
     "id": "sml-taichung",
     "day": "2026-12-02",
     "label": "Sun Moon Lake → HSR Taichung",
-    "from": [23.8662, 120.91],
-    "to": [24.1121, 120.6157],
+    "from": [
+      23.8662,
+      120.91
+    ],
+    "to": [
+      24.1121,
+      120.6157
+    ],
     "roads": "Hwy 21 → Hwy 14 (Puli) → Freeway 6 → Freeway 3 → HSR Taichung exit",
     "km": 64,
-    "time": "≈1h05"
+    "time": "≈1h05",
+    "versions": [
+      "v1"
+    ]
+  },
+  {
+    "id": "tpe-qingshui",
+    "day": "2026-11-28",
+    "label": "Taoyuan Airport → Qingshui Service Area",
+    "from": [
+      25.0797,
+      121.2342
+    ],
+    "to": [
+      24.2785,
+      120.602
+    ],
+    "roads": "Freeway 2 → Freeway 3 south to Qingshui Service Area",
+    "km": 125,
+    "time": "≈1h20",
+    "versions": [
+      "v2"
+    ]
+  },
+  {
+    "id": "qingshui-rainbow",
+    "day": "2026-11-28",
+    "label": "Qingshui → Rainbow Village",
+    "from": [
+      24.2785,
+      120.602
+    ],
+    "to": [
+      24.1338,
+      120.61
+    ],
+    "roads": "Freeway 3 south → Taichung (Nantun)",
+    "km": 25,
+    "time": "≈30 min",
+    "versions": [
+      "v2"
+    ]
+  },
+  {
+    "id": "rainbow-miyahara",
+    "day": "2026-11-28",
+    "label": "Rainbow Village → Miyahara",
+    "from": [
+      24.1338,
+      120.61
+    ],
+    "to": [
+      24.1375,
+      120.6838
+    ],
+    "roads": "City streets into central Taichung",
+    "km": 10,
+    "time": "≈25 min",
+    "versions": [
+      "v2"
+    ]
+  },
+  {
+    "id": "market-theater",
+    "day": "2026-11-28",
+    "label": "Second Market → National Taichung Theater",
+    "from": [
+      24.1418,
+      120.6805
+    ],
+    "to": [
+      24.1627,
+      120.6402
+    ],
+    "roads": "Taiwan Blvd west to Xitun",
+    "km": 6,
+    "time": "≈20 min",
+    "versions": [
+      "v2"
+    ]
+  },
+  {
+    "id": "theater-chiayi",
+    "day": "2026-11-28",
+    "label": "Taichung → Chiayi",
+    "from": [
+      24.1627,
+      120.6402
+    ],
+    "to": [
+      23.4793,
+      120.4413
+    ],
+    "roads": "Freeway 1 (or Freeway 3) south to Chiayi city",
+    "km": 95,
+    "time": "≈1h20",
+    "versions": [
+      "v2"
+    ]
+  },
+  {
+    "id": "chiayi-city-fenqihu",
+    "day": "2026-11-29",
+    "label": "Chiayi → Fenqihu",
+    "from": [
+      23.4793,
+      120.4413
+    ],
+    "to": [
+      23.5013,
+      120.6955
+    ],
+    "roads": "Hwy 18 (Alishan Hwy) → County Rd 159甲 → 169 to Fenqihu",
+    "km": 60,
+    "time": "≈1h20",
+    "versions": [
+      "v2"
+    ]
+  },
+  {
+    "id": "sml-taipei",
+    "day": "2026-12-02",
+    "label": "Sun Moon Lake → Taipei",
+    "from": [
+      23.8662,
+      120.91
+    ],
+    "to": [
+      25.0478,
+      121.517
+    ],
+    "roads": "Hwy 21 → Freeway 6 → Freeway 3 north → Taipei",
+    "km": 215,
+    "time": "≈2h45–3h",
+    "versions": [
+      "v2"
+    ]
   }
 ]

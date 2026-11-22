@@ -1,12 +1,14 @@
 import 'leaflet/dist/leaflet.css';
 import './style.css';
 import L from 'leaflet';
-import { trip, flights, days, places, tips, type Leg, type Stop, type Day, type Mode } from './trip';
+import { trip, flights, places, tips, type Leg, type Stop, type Day, type Mode } from './trip';
+import { versions, type Version } from './versions';
 import drivesData from './drives.json';
 import routesData from './routes.generated.json';
 
 interface Drive {
   id: string;
+  versions?: string[];
   day: string;
   label: string;
   from: [number, number];
@@ -21,7 +23,32 @@ interface Route {
   min: number;
   gvia: [number, number][];
 }
-const drives = drivesData as unknown as Drive[];
+const allDrives = drivesData as unknown as Drive[];
+
+// ── Plan versions: chosen plan is remembered on this device ──
+const VER_KEY = 'tw26:version';
+function loadVersion(): Version {
+  let id: string | null = null;
+  try {
+    id = localStorage.getItem(VER_KEY);
+  } catch {
+    /* storage blocked: default plan */
+  }
+  return versions.find((v) => v.id === id) ?? versions[0];
+}
+let ver = loadVersion();
+let days: Day[] = ver.days;
+let drives: Drive[] = allDrives.filter((d) => !d.versions || d.versions.includes(ver.id));
+function setVersion(id: string) {
+  ver = versions.find((v) => v.id === id) ?? versions[0];
+  days = ver.days;
+  drives = allDrives.filter((d) => !d.versions || d.versions.includes(ver.id));
+  try {
+    localStorage.setItem(VER_KEY, ver.id);
+  } catch {
+    /* ignore */
+  }
+}
 const routes = routesData as unknown as Record<string, Route>;
 
 function navUrl(d: Drive) {
@@ -33,13 +60,20 @@ function navUrl(d: Drive) {
   );
 }
 
+function driveMeta(d: Drive) {
+  const r = routes[d.id];
+  if (!r) return `${d.km} km · ${esc(d.time)}`;
+  const t = r.min >= 60 ? `${Math.floor(r.min / 60)}h${String(r.min % 60).padStart(2, '0')}` : `${r.min} min`;
+  return `${r.km} km · ≈${t} (mountain roads often take longer)`;
+}
+
 function driveHtml(d: Drive) {
   const i = days.findIndex((x) => x.date === d.day);
   const color = DAY_COLORS[i % DAY_COLORS.length];
   return `
     <article class="drive" style="border-left-color:${color}">
       <div class="drive-top"><strong>🚗 ${esc(d.label)}</strong><span class="muted">Day ${i + 1}</span></div>
-      <div class="drive-meta">${d.km} km · ${esc(d.time)}</div>
+      <div class="drive-meta">${driveMeta(d)}</div>
       <p>${esc(d.roads)}</p>
       <a class="btn" href="${navUrl(d)}" target="_blank" rel="noopener">Navigate in Google Maps ↗</a>
     </article>`;
@@ -225,15 +259,19 @@ function planView(date: string) {
 }
 
 let exploreFilter = 'All';
+/** Which day of the current plan visits this place (matched by its map search), or -1 */
+function planDayOf(map: string) {
+  return days.findIndex((d) => d.stops.some((s) => s.map === map));
+}
 function exploreView() {
   const kinds = ['All', 'Planned', 'Extra ideas', ...new Set(places.map((p) => p.kind))];
   const list = places.filter((p) =>
     exploreFilter === 'All'
       ? true
       : exploreFilter === 'Planned'
-        ? !!p.day
+        ? planDayOf(p.map) >= 0
         : exploreFilter === 'Extra ideas'
-          ? !p.day
+          ? planDayOf(p.map) < 0
           : p.kind === exploreFilter,
   );
   return `
@@ -246,7 +284,7 @@ function exploreView() {
       <div class="cards">
         ${list
           .map((p) => {
-            const di = p.day ? days.findIndex((d) => d.date === p.day) : -1;
+            const di = planDayOf(p.map);
             return `
             <article class="card">
               <div class="card-top">
@@ -270,7 +308,7 @@ function tipsView() {
   return `
     <section class="page">
       <h2>Good to know</h2>
-      <div class="callout">🏨 <strong>Base:</strong> ${esc(trip.base.name)}${trip.base.guess ? ' <span class="badge badge-guess">guess</span>' : ''}<br />${esc(trip.base.note)}</div>
+      <div class="callout">🏨 <strong>Base:</strong> ${esc(ver.base)}${trip.base.guess ? ' <span class="badge badge-guess">guess</span>' : ''}<br />${esc(trip.base.note)}</div>
       <div class="flights">
         ${flights
           .map(
@@ -365,7 +403,7 @@ function initMap(id = 'map', only = mapDay) {
     L.polyline(r.line, { color: DAY_COLORS[i % DAY_COLORS.length], weight: 5, opacity: 1 })
       .addTo(m)
       .bindPopup(
-        `<strong>🚗 ${esc(d.label)}</strong><br>${d.km} km · ${esc(d.time)}<br>${esc(d.roads)}<br><a href="${navUrl(d)}" target="_blank" rel="noopener">Navigate in Google Maps ↗</a>`,
+        `<strong>🚗 ${esc(d.label)}</strong><br>${driveMeta(d)}<br>${esc(d.roads)}<br><a href="${navUrl(d)}" target="_blank" rel="noopener">Navigate in Google Maps ↗</a>`,
       );
     r.line.forEach((p) => bounds.push(p));
   });
@@ -389,6 +427,16 @@ function render() {
       </div>
       <div class="count">${countdown()}</div>
     </header>
+    <div class="vbar">
+      <div class="vswitch" role="group" aria-label="Choose plan">
+        ${versions
+          .map(
+            (v) =>
+              `<button class="${v.id === ver.id ? 'is-active' : ''}" data-ver="${v.id}" aria-pressed="${v.id === ver.id}"><strong>${esc(v.name)}</strong><span>${esc(v.short)}</span></button>`,
+          )
+          .join('')}
+      </div>
+    </div>
     <main>${body}</main>
     <nav class="tabs" aria-label="Sections">
       <a href="#plan/${view.name === 'plan' ? view.date : defaultDay()}" class="${view.name === 'plan' ? 'is-active' : ''}"><span>🗓️</span>Plan</a>
@@ -414,6 +462,15 @@ function scrollToNow() {
 
 app.addEventListener('click', (e) => {
   const t = e.target as HTMLElement;
+  const vb = t.closest<HTMLButtonElement>('[data-ver]');
+  if (vb) {
+    if (vb.dataset.ver !== ver.id) {
+      setVersion(vb.dataset.ver!);
+      render();
+      scrollToNow();
+    }
+    return;
+  }
   const md = t.closest<HTMLButtonElement>('[data-mapday]');
   if (md) {
     mapDay = md.dataset.mapday!;

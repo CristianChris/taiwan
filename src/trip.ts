@@ -566,8 +566,8 @@ export const tips: Tip[] = [
     points: [
       'Check visa rules for your passport (many passports, incl. Singapore, are visa-free for short stays).',
       'Fill in the Taiwan online arrival card a few days before.',
-      'Book now: HSR Taipei→Chiayi (29 Nov) and Taichung→Taoyuan (2 Dec) on the T Express app; Alishan hotel (2 nights); Sun Moon Lake hotel.',
-      'Rental car: pick up HSR Chiayi on 29 Nov, one-way return HSR Taichung on 2 Dec. Get an International Driving Permit before you fly — Taiwan requires it with your home licence.',
+      'Book now: Alishan hotel (2 nights) and Sun Moon Lake hotel. Plan 1 also: HSR Taipei→Chiayi (29 Nov) and Taichung→Taoyuan (2 Dec) on the T Express app, plus a Taipei hotel. Plan 2: a Chiayi hotel instead.',
+      'Rental car — Plan 1: pick up HSR Chiayi on 29 Nov, one-way return HSR Taichung on 2 Dec. Plan 2: pick up at Taoyuan Airport on 28 Nov, one-way return in Taipei on 2 Dec. Get an International Driving Permit before you fly — Taiwan requires it with your home licence.',
       'Download offline Google Maps for Taipei.',
     ],
   },
