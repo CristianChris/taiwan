@@ -146,8 +146,17 @@ main {
   border: 1px solid var(--line);
 }
 .stop.is-optional { border-style: dashed; }
-.stop.is-done { opacity: 0.55; }
-.stop.is-done h3 { text-decoration: line-through; }
+.stop.is-now { border: 2px solid var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+.badge.badge-now { background: var(--accent); color: #fff; }
+.stop-wrap { display: grid; gap: 8px; }
+.day-map {
+  height: 260px;
+  margin-top: 14px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  overflow: hidden;
+  z-index: 0;
+}
 .stop-time { font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; font-size: 0.92rem; padding-top: 1px; }
 .stop h3 { font-size: 1.05rem; }
 .stop p { color: var(--ink); font-size: 0.95rem; }

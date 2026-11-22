@@ -75,6 +75,29 @@ function taiwanToday(): string {
 function fmtDay(iso: string, opts: Intl.DateTimeFormatOptions) {
   return new Date(iso + 'T12:00:00+08:00').toLocaleDateString('en-GB', { timeZone: 'Asia/Taipei', ...opts });
 }
+/** Current time in Taiwan as minutes since midnight */
+function taiwanMinutes(): number {
+  const [h, m] = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Taipei', hour: '2-digit', minute: '2-digit', hour12: false })
+    .format(new Date())
+    .split(':')
+    .map(Number);
+  return (h % 24) * 60 + m;
+}
+const stopMinutes = (t: string) => {
+  const m = t.match(/(\d{1,2}):(\d{2})/);
+  return m ? +m[1] * 60 + +m[2] : null;
+};
+/** Index of the stop happening now (last stop that has started), only on the trip day itself */
+function currentStopIndex(day: Day): number {
+  if (day.date !== taiwanToday()) return -1;
+  const now = taiwanMinutes();
+  let idx = 0;
+  day.stops.forEach((s, i) => {
+    const m = stopMinutes(s.time);
+    if (m !== null && m <= now) idx = i;
+  });
+  return idx;
+}
 function daysBetween(a: string, b: string) {
   return Math.round((Date.parse(b) - Date.parse(a)) / 86_400_000);
 }
@@ -89,25 +112,6 @@ function countdown(): string {
   const i = days.findIndex((d) => d.date === today);
   return `Day ${i + 1} of ${days.length} — enjoy!`;
 }
-
-// ── "Done" ticks, stored per device ──
-const store = {
-  get(k: string) {
-    try {
-      return localStorage.getItem(k);
-    } catch {
-      return null;
-    }
-  },
-  set(k: string, v: string | null) {
-    try {
-      v === null ? localStorage.removeItem(k) : localStorage.setItem(k, v);
-    } catch {
-      /* private mode: ticks just won't persist */
-    }
-  },
-};
-const doneKey = (date: string, i: number) => `tw26:done:${date}:${i}`;
 
 // ── Routing: #plan/<date> | #explore | #tips ──
 type View = { name: 'plan'; date: string } | { name: 'map' } | { name: 'explore' } | { name: 'tips' };
@@ -143,15 +147,16 @@ function legHtml(leg: Leg) {
     </div>`;
 }
 
-function stopHtml(day: Day, s: Stop, i: number) {
-  const done = store.get(doneKey(day.date, i)) === '1';
+function stopHtml(s: Stop, i: number, now: boolean) {
   const badges = [
+    now ? '<span class="badge badge-now">now</span>' : '',
     s.optional ? '<span class="badge badge-opt">optional</span>' : '',
     s.guess ? '<span class="badge badge-guess" title="An assumption — please check">guess</span>' : '',
   ].join('');
   return `
+    <div class="stop-wrap" id="stop-${i}">
     ${s.getThere ? legHtml(s.getThere) : ''}
-    <article class="stop${done ? ' is-done' : ''}${s.optional ? ' is-optional' : ''}">
+    <article class="stop${now ? ' is-now' : ''}${s.optional ? ' is-optional' : ''}">
       <div class="stop-time">${esc(s.time)}</div>
       <div class="stop-main">
         <h3>${esc(s.title)} ${badges}</h3>
@@ -159,18 +164,17 @@ function stopHtml(day: Day, s: Stop, i: number) {
         ${s.tips?.length ? `<ul class="stop-tips">${s.tips.map((t) => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}
         <div class="stop-actions">
           ${s.map ? `<a class="btn" href="${mapUrl(s.map)}" target="_blank" rel="noopener">📍 Map</a>` : ''}
-          <button class="btn btn-ghost tick" data-key="${doneKey(day.date, i)}" aria-pressed="${done}">
-            ${done ? '✓ Done' : 'Mark done'}
-          </button>
         </div>
       </div>
-    </article>`;
+    </article>
+    </div>`;
 }
 
 function planView(date: string) {
   const day = days.find((d) => d.date === date)!;
   const idx = days.indexOf(day);
   const today = taiwanToday();
+  const nowIdx = currentStopIndex(day);
   const chips = days
     .map(
       (d, i) => `
@@ -206,7 +210,8 @@ function planView(date: string) {
         ${day.heads_up ? `<div class="callout">💡 ${esc(day.heads_up)}</div>` : ''}
       </header>
       ${flightCard}
-      <div class="timeline">${day.stops.map((s, i) => stopHtml(day, s, i)).join('')}</div>
+      <div id="daymap" class="day-map" role="region" aria-label="Map of day ${idx + 1}"></div>
+      <div class="timeline">${day.stops.map((s, i) => stopHtml(s, i, i === nowIdx)).join('')}</div>
       ${
         day.alternatives?.length
           ? `<section class="alts"><h3>Swap-in ideas</h3><ul>${day.alternatives.map((a) => `<li>${esc(a)}</li>`).join('')}</ul></section>`
@@ -317,8 +322,8 @@ function mapView() {
     </section>`;
 }
 
-function initMap() {
-  const el = document.getElementById('map');
+function initMap(id = 'map', only = mapDay) {
+  const el = document.getElementById(id);
   if (!el) return;
   const m = L.map(el, { zoomControl: true, attributionControl: true });
   leafletMap = m;
@@ -329,10 +334,10 @@ function initMap() {
 
   const bounds: L.LatLngTuple[] = [];
   days.forEach((d, i) => {
-    if (mapDay !== 'all' && mapDay !== d.date) return;
+    if (only !== 'all' && only !== d.date) return;
     const color = DAY_COLORS[i % DAY_COLORS.length];
     // start the line where the previous day ended, so travel between days shows too
-    const prevEnd = i > 0 ? [...days[i - 1].stops].reverse().find((s) => s.at)?.at : undefined;
+    const prevEnd = i > 0 && only === 'all' ? [...days[i - 1].stops].reverse().find((s) => s.at)?.at : undefined;
     const path: L.LatLngTuple[] = prevEnd ? [prevEnd] : [];
     const seen = new Set<string>();
     d.stops.forEach((s) => {
@@ -352,7 +357,7 @@ function initMap() {
     if (path.length > 1) L.polyline(path, { color, weight: 3, opacity: 0.8, dashArray: '6 6' }).addTo(m);
   });
   drives.forEach((d) => {
-    if (mapDay !== 'all' && mapDay !== d.day) return;
+    if (only !== 'all' && only !== d.day) return;
     const r = routes[d.id];
     if (!r) return;
     const i = days.findIndex((x) => x.date === d.day);
@@ -393,17 +398,22 @@ function render() {
     </nav>`;
   app.querySelector('.chip.is-active')?.scrollIntoView({ inline: 'center', block: 'nearest' });
   if (view.name === 'map') initMap();
+  if (view.name === 'plan') initMap('daymap', view.date);
+}
+
+/** Plan for today opens at the stop happening now; everything else opens at the top. */
+function scrollToNow() {
+  const view = parseHash();
+  const day = view.name === 'plan' ? days.find((d) => d.date === view.date) : undefined;
+  const i = day ? currentStopIndex(day) : -1;
+  const el = i > 0 ? document.getElementById(`stop-${i}`) : null;
+  if (!el) return window.scrollTo(0, 0);
+  const chips = document.querySelector('.chips') as HTMLElement | null;
+  window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - (chips?.offsetHeight ?? 0) - 12 });
 }
 
 app.addEventListener('click', (e) => {
   const t = e.target as HTMLElement;
-  const tick = t.closest<HTMLButtonElement>('.tick');
-  if (tick) {
-    const k = tick.dataset.key!;
-    store.set(k, store.get(k) === '1' ? null : '1');
-    render();
-    return;
-  }
   const md = t.closest<HTMLButtonElement>('[data-mapday]');
   if (md) {
     mapDay = md.dataset.mapday!;
@@ -419,6 +429,7 @@ app.addEventListener('click', (e) => {
 
 window.addEventListener('hashchange', () => {
   render();
-  window.scrollTo(0, 0);
+  scrollToNow();
 });
 render();
+scrollToNow();
