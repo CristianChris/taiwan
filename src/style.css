@@ -393,3 +393,17 @@ main {
 .about p { line-height: 1.55; }
 .about .stop-actions { margin-top: 14px; }
 .about-nav { display: flex; justify-content: space-between; margin-top: 18px; }
+
+/* Drone spots (as on the Australia trip) */
+.drone { font-size: 0.82rem; margin: 4px 0 6px; padding: 4px 10px; border-radius: 10px; width: fit-content; }
+.drone.is-ok { background: var(--accent-soft); color: var(--ink); }
+.drone.is-check { background: #fff4d6; color: #7a5a00; }
+.drone.is-no { border: 1px dashed var(--muted); color: var(--muted); }
+.about .drone { width: auto; font-size: 0.92rem; line-height: 1.5; padding: 8px 12px; }
+
+/* Tonight's stay */
+.stay { margin-top: 14px; padding: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
+.stay-kicker { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--accent); }
+.stay h3 { margin: 4px 0 2px; font-size: 1.05rem; }
+.stay .small { font-size: 0.82rem; }
+.badge.badge-booked { background: #2f7d4f; color: #fff; }

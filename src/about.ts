@@ -24,12 +24,18 @@ export const about: Record<string, About> = {
       "Taiwan's main international airport, about 40 km west of Taipei. Scoot uses Terminal 1. The Airport MRT links both terminals to Taipei Main Station in about 35–40 minutes on the purple Express train.",
     good: ['24-hour convenience stores and ATMs in arrivals.', 'Telecom counters (Chunghwa, Taiwan Mobile, FarEasTone) sell tourist SIMs in arrivals.'],
   },
-  'Taoyuan International Airport car rental': {
-    name: 'Car rental counters, Taoyuan Airport',
-    q: 'Taoyuan International Airport car rental',
+  桃園市大園區中正東路309號: {
+    name: 'Rental car pick-up, Dayuan (near Taoyuan Airport)',
+    q: '桃園市大園區中正東路309號',
     about:
-      'Several Taiwanese rental companies have counters or shuttle pick-ups at the airport. You need your home licence, an International Driving Permit (1949 Geneva type), your passport and a credit card. Taiwan drives on the right and freeways use eTag tolls, which are billed with the rental.',
-    good: ['Ask for one-way return in Taipei city and check the drop-off fee.', 'Check the car has an eTag sticker for freeway tolls.'],
+      'Your rental company’s office at No. 309, Zhongzheng E. Rd., Dayuan Dist., about 10 minutes from the airport terminals. They offer free pick-up from the airport: call 03-3862555 when you land. You need your home licence, an International Driving Permit (1949 Geneva type), your passport and a credit card. Taiwan drives on the right and freeways use eTag tolls.',
+    good: ['From a foreign SIM dial +886 3 386 2555.', 'Check the car has an eTag sticker for freeway tolls.', 'Take photos of the car before you drive off.'],
+  },
+  'Ali-Shan Dengshan Hotel': {
+    name: 'Ali-Shan Dengshan Hotel (阿里山登山大飯店)',
+    rating: 2.8,
+    reviews: 635,
+    about: 'Hotel in Alishan village inside the forest recreation area, close to Alishan station.',
   },
   'Taipei Main Station': {
     name: 'Taipei Main Station',

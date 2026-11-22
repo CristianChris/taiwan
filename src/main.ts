@@ -2,8 +2,9 @@ import 'leaflet/dist/leaflet.css';
 import './style.css';
 import L from 'leaflet';
 import { about, RATINGS_CHECKED } from './about';
-import { trip, flights, places, tips, type Leg, type Stop, type Day, type Mode } from './trip';
-import { versions, type Version } from './versions';
+import { DRONE, DRONE_LABEL, DRONE_CHECKED } from './drone';
+import { trip, flights, places, tips, type Leg, type Stop, type Stay, type Day, type Mode } from './trip';
+import { versions } from './versions';
 import drivesData from './drives.json';
 import routesData from './routes.generated.json';
 
@@ -26,30 +27,10 @@ interface Route {
 }
 const allDrives = drivesData as unknown as Drive[];
 
-// ── Plan versions: chosen plan is remembered on this device ──
-const VER_KEY = 'tw26:version';
-function loadVersion(): Version {
-  let id: string | null = null;
-  try {
-    id = localStorage.getItem(VER_KEY);
-  } catch {
-    /* storage blocked: default plan */
-  }
-  return versions.find((v) => v.id === id) ?? versions[0];
-}
-let ver = loadVersion();
-let days: Day[] = ver.days;
-let drives: Drive[] = allDrives.filter((d) => !d.versions || d.versions.includes(ver.id));
-function setVersion(id: string) {
-  ver = versions.find((v) => v.id === id) ?? versions[0];
-  days = ver.days;
-  drives = allDrives.filter((d) => !d.versions || d.versions.includes(ver.id));
-  try {
-    localStorage.setItem(VER_KEY, ver.id);
-  } catch {
-    /* ignore */
-  }
-}
+// ── One plan (formerly "Plan 2"): car from the airport, Taipei on the last day ──
+const ver = versions[0];
+const days: Day[] = ver.days;
+const drives: Drive[] = allDrives.filter((d) => !d.versions || d.versions.includes(ver.id));
 const routes = routesData as unknown as Record<string, Route>;
 
 function navUrl(d: Drive) {
@@ -205,6 +186,25 @@ function stopNumbers(day: Day): (number | null)[] {
   return day.stops.map((s) => (s.at ? ++n : null));
 }
 
+function droneHtml(map?: string, long = false) {
+  const d = map ? DRONE[map] : undefined;
+  if (!d) return '';
+  return `<div class="drone is-${d.status}"><strong>${DRONE_LABEL[d.status]}</strong>${long ? ` — ${esc(d.note)}` : ''}</div>`;
+}
+
+function stayHtml(st: Stay) {
+  const badge = st.booked ? '<span class="badge badge-booked">booked</span>' : '<span class="badge badge-guess">to book</span>';
+  return `
+    <section class="stay">
+      <div class="stay-kicker">🏨 Tonight</div>
+      <h3>${esc(st.name)} ${badge}</h3>
+      ${st.booked ? ratingHtml(st.map) : ''}
+      ${st.address ? `<div class="small muted">${esc(st.address)}</div>` : ''}
+      <p class="muted">${esc(st.note)}</p>
+      <div class="stop-actions"><a class="btn" href="${mapUrl(st.map)}" target="_blank" rel="noopener">📍 Map</a></div>
+    </section>`;
+}
+
 function stopHtml(s: Stop, i: number, now: boolean, num: number | null = null, color = '', date = '') {
   const badges = [
     now ? '<span class="badge badge-now">now</span>' : '',
@@ -219,6 +219,7 @@ function stopHtml(s: Stop, i: number, now: boolean, num: number | null = null, c
       <div class="stop-main">
         <h3>${esc(s.title)} ${badges}</h3>
         ${ratingHtml(s.map)}
+        ${droneHtml(s.map)}
         <p>${esc(s.details)}</p>
         ${s.tips?.length ? `<ul class="stop-tips">${s.tips.map((t) => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}
         <div class="stop-actions">
@@ -249,6 +250,7 @@ function aboutView(date: string, i: number) {
       ${ratingHtml(s.map, true)}
       ${a?.rating ? `<div class="about-note">Google rating checked ${RATINGS_CHECKED}. Tap it to read the reviews.</div>` : ''}
       ${a ? `<h3>About</h3><p>${esc(a.about)}</p>` : ''}
+      ${DRONE[s.map ?? ''] ? `<h3>Drone</h3>${droneHtml(s.map, true)}<div class="about-note">Checked ${DRONE_CHECKED}. Always check the CAA drone map on the day — see Tips → Drone rules.</div>` : ''}
       <h3>In your plan</h3>
       <p>${esc(s.details)}</p>
       ${s.getThere ? `<h3>Getting there</h3>${legHtml(s.getThere)}` : ''}
@@ -323,6 +325,7 @@ function planView(date: string) {
         const c = DAY_COLORS[idx % DAY_COLORS.length];
         return day.stops.map((s, i) => stopHtml(s, i, i === nowIdx, nums[i], c, day.date)).join('');
       })()}</div>
+      ${day.stay ? stayHtml(day.stay) : ''}
       ${
         day.alternatives?.length
           ? `<section class="alts"><h3>Swap-in ideas</h3><ul>${day.alternatives.map((a) => `<li>${esc(a)}</li>`).join('')}</ul></section>`
@@ -385,7 +388,16 @@ function tipsView() {
   return `
     <section class="page">
       <h2>Good to know</h2>
-      <div class="callout">🏨 <strong>Base:</strong> ${esc(ver.base)}${trip.base.guess ? ' <span class="badge badge-guess">guess</span>' : ''}<br />${esc(trip.base.note)}</div>
+      <section class="tip">
+        <h3><span aria-hidden="true">🏨</span> Where you sleep</h3>
+        <ul>${days
+          .filter((d) => d.stay)
+          .map(
+            (d) =>
+              `<li><a href="#plan/${d.date}"><strong>${fmtDay(d.date, { weekday: 'short', day: 'numeric', month: 'short' })}</strong></a> · ${esc(d.stay!.name)} ${d.stay!.booked ? '<span class="badge badge-booked">booked</span>' : '<span class="badge badge-guess">to book</span>'}</li>`,
+          )
+          .join('')}</ul>
+      </section>
       <div class="flights">
         ${flights
           .map(
@@ -518,16 +530,6 @@ function render() {
       </div>
       <div class="count">${countdown()}</div>
     </header>
-    <div class="vbar">
-      <div class="vswitch" role="group" aria-label="Choose plan">
-        ${versions
-          .map(
-            (v) =>
-              `<button class="${v.id === ver.id ? 'is-active' : ''}" data-ver="${v.id}" aria-pressed="${v.id === ver.id}"><strong>${esc(v.name)}</strong><span>${esc(v.short)}</span></button>`,
-          )
-          .join('')}
-      </div>
-    </div>
     <main>${body}</main>
     <nav class="tabs" aria-label="Sections">
       <a href="#plan/${view.name === 'plan' || view.name === 'about' ? view.date : defaultDay()}" class="${view.name === 'plan' || view.name === 'about' ? 'is-active' : ''}"><span>🗓️</span>Plan</a>
@@ -565,15 +567,6 @@ function scrollToNow() {
 
 app.addEventListener('click', (e) => {
   const t = e.target as HTMLElement;
-  const vb = t.closest<HTMLButtonElement>('[data-ver]');
-  if (vb) {
-    if (vb.dataset.ver !== ver.id) {
-      setVersion(vb.dataset.ver!);
-      render();
-      scrollToNow();
-    }
-    return;
-  }
   const md = t.closest<HTMLButtonElement>('[data-mapday]');
   if (md) {
     mapDay = md.dataset.mapday!;

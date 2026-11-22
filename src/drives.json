@@ -1,24 +1,5 @@
 [
   {
-    "id": "chiayi-fenqihu",
-    "day": "2026-11-29",
-    "label": "HSR Chiayi → Fenqihu",
-    "from": [
-      23.4596,
-      120.3233
-    ],
-    "to": [
-      23.5013,
-      120.6955
-    ],
-    "roads": "Expressway 82 east → Hwy 3 → Hwy 18 (Alishan Hwy) → County Rd 159甲 → 169 to Fenqihu",
-    "km": 69,
-    "time": "≈1h15",
-    "versions": [
-      "v1"
-    ]
-  },
-  {
     "id": "fenqihu-alishan",
     "day": "2026-11-29",
     "label": "Fenqihu → Alishan",
@@ -99,31 +80,12 @@
     ]
   },
   {
-    "id": "sml-taichung",
-    "day": "2026-12-02",
-    "label": "Sun Moon Lake → HSR Taichung",
-    "from": [
-      23.8662,
-      120.91
-    ],
-    "to": [
-      24.1121,
-      120.6157
-    ],
-    "roads": "Hwy 21 → Hwy 14 (Puli) → Freeway 6 → Freeway 3 → HSR Taichung exit",
-    "km": 64,
-    "time": "≈1h05",
-    "versions": [
-      "v1"
-    ]
-  },
-  {
     "id": "tpe-qingshui",
     "day": "2026-11-28",
-    "label": "Taoyuan Airport → Qingshui Service Area",
+    "label": "Car pick-up (Dayuan) → Qingshui Service Area",
     "from": [
-      25.0797,
-      121.2342
+      25.0614,
+      121.2052
     ],
     "to": [
       24.2785,

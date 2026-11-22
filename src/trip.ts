@@ -48,6 +48,18 @@ export interface Day {
   stops: Stop[];
   /** Swap-in ideas if the plan doesn't fit (weather, energy, interests) */
   alternatives?: string[];
+  /** Where you sleep tonight */
+  stay?: Stay;
+}
+
+export interface Stay {
+  name: string;
+  map: string;
+  at?: [number, number];
+  address?: string;
+  note: string;
+  /** true = booked; otherwise shown as "to book" */
+  booked?: boolean;
 }
 
 export interface Flight {
@@ -561,13 +573,25 @@ export const places: Place[] = [
 
 export const tips: Tip[] = [
   {
+    title: 'Drone rules (🛸 spots marked on the plan)',
+    icon: '🛸',
+    points: [
+      'Each stop shows 🛸 drone spot, ⚠️ ask first (permit or unclear rule) or 🚫 no drone. Checked 22 Nov 2026 — rules and red zones change, so check the CAA drone map (drone.caa.gov.tw) or the SkySentry app on the day.',
+      'Drones over 250 g must be registered with Taiwan’s Civil Aviation Administration (CAA) and show the registration number. Foreign visitors need CAA approval before flying: apply online with your passport and home registration. Registration for non-residents lasts about 6 months. Sources disagree on drones under 250 g, so ask the CAA if yours is a Mini.',
+      'Max 120 m (400 ft), daylight only (not before sunrise or after sunset), always in sight, never over crowds or events, and keep about 30 m from roads, railways and buildings.',
+      'No flying within about 2.6–5 km of airports (Taoyuan, Songshan in Taipei, Taichung, Chiayi). Central Taipei and central Chiayi are mostly red zones.',
+      'National parks (Yushan at Tataka) need an application. Sun Moon Lake has banned unauthorised flying at its main piers and Xiangshan. For Alishan, ask the forest recreation area before flying.',
+      'Fines are big: from NT$10,000 for missing registration or night flying, up to NT$300,000–1,500,000 for flying in restricted airspace.',
+    ],
+  },
+  {
     title: 'Before you fly',
     icon: '🧳',
     points: [
       'Check visa rules for your passport (many passports, incl. Singapore, are visa-free for short stays).',
       'Fill in the Taiwan online arrival card a few days before.',
-      'Book now: Alishan hotel (2 nights) and Sun Moon Lake hotel. Plan 1 also: HSR Taipei→Chiayi (29 Nov) and Taichung→Taoyuan (2 Dec) on the T Express app, plus a Taipei hotel. Plan 2: a Chiayi hotel instead.',
-      'Rental car — Plan 1: pick up HSR Chiayi on 29 Nov, one-way return HSR Taichung on 2 Dec. Plan 2: pick up at Taoyuan Airport on 28 Nov, one-way return in Taipei on 2 Dec. Get an International Driving Permit before you fly — Taiwan requires it with your home licence.',
+      'Still to book: Chiayi hotel (28 Nov), Alishan hotel for 29 Nov, Sun Moon Lake hotel (1 Dec). Ali-Shan Dengshan Hotel is booked for 30 Nov.',
+      'Rental car: picked up near Taoyuan Airport on 28 Nov (No. 309, Zhongzheng E. Rd., Dayuan Dist.; free airport pick-up — call 03-3862555 on arrival). Ask them about returning it in Taipei on 2 Dec. Get an International Driving Permit before you fly — Taiwan requires it with your home licence.',
       'Download offline Google Maps for Taipei.',
     ],
   },

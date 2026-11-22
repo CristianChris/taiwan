@@ -1,10 +1,19 @@
 /*
- * PLAN 2 — rental car from Taoyuan Airport on arrival, Taichung sights on the
+ * THE PLAN — rental car from Taoyuan Airport on arrival, Taichung sights on the
  * way to Chiayi, Taipei sightseeing on the last day.
- * Days 3 and 4 are the same as Plan 1 and are reused from trip.ts.
+ * Days 3 and 4 reuse the stops of days 3 and 4 in trip.ts.
  * Same conventions as trip.ts (≈ = estimate, guess, optional, at = map pin).
  */
-import { days as plan1, type Day } from './trip';
+import { days as plan1, type Day, type Stay } from './trip';
+
+const DENGSHAN: Stay = {
+  name: 'Ali-Shan Dengshan Hotel (阿里山登山大飯店)',
+  map: 'Ali-Shan Dengshan Hotel',
+  at: [23.5116, 120.8033],
+  address: 'East 47, Alishan National Forest Recreation Area, Alishan Township, Chiayi County',
+  note: 'In Alishan village, a short walk from Alishan station and the sunrise-train platform.',
+  booked: true,
+};
 
 const p1day2 = plan1[1];
 
@@ -28,12 +37,13 @@ export const daysV2: Day[] = [
       },
       {
         time: '≈07:00',
-        title: 'Pick up the rental car at the airport',
+        title: 'Pick up the rental car near the airport',
         details:
-          'Rental counters are in the arrivals hall (e.g. Hotai, Car Plus, Chailease). Book ahead and ask for one-way return in Taipei city (e.g. a Taipei Main Station branch) on 2 Dec. Bring IDP + home licence + passport + credit card.',
-        map: 'Taoyuan International Airport car rental',
-        at: [25.0797, 121.2342],
-        guess: true,
+          'Free airport pick-up: call 03-3862555 when you land and they collect you from the terminal. Car office: No. 309, Zhongzheng E. Rd., Dayuan Dist., Taoyuan City (≈10 min from the terminal). Bring IDP + home licence + passport + credit card.',
+        map: '桃園市大園區中正東路309號',
+        at: [25.0614, 121.2052],
+        tips: ['Call 03-3862555 after immigration (+886 3 386 2555 from a foreign SIM).', 'Ask whether you can return the car in Taipei on 2 Dec, and the fee.'],
+        getThere: { mode: 'car', how: 'Free pick-up shuttle from the terminal', duration: '≈10 min' },
       },
       {
         time: '≈08:30',
@@ -45,7 +55,7 @@ export const daysV2: Day[] = [
           mode: 'car',
           how: 'Freeway 2 → Freeway 3 south',
           duration: '≈1h20',
-          from: 'Taoyuan International Airport',
+          from: '桃園市大園區中正東路309號',
           to: '清水服務區',
         },
       },
@@ -103,6 +113,11 @@ export const daysV2: Day[] = [
       'Too tired to drive after the flight? Take the HSR to Taichung instead and pick the car up at HSR Taichung.',
       'Sunset fan: swap the theater for Gaomei Wetlands (≈40 min west of Taichung, sunset ≈17:15) — then reach Chiayi around 19:30.',
     ],
+    stay: {
+      name: 'Hotel in Chiayi (to book)',
+      map: 'Chiayi Station',
+      note: 'Pick one near Chiayi station or Wenhua Road with parking, so you can walk to the night market.',
+    },
   },
   {
     ...p1day2,
@@ -133,9 +148,21 @@ export const daysV2: Day[] = [
           : s,
       ),
     ],
+    stay: {
+      name: 'Hotel in Alishan (to book)',
+      map: 'Alishan Forest Recreation Area',
+      note: 'First night in Alishan. Easiest is to stay at Ali-Shan Dengshan Hotel both nights, so you don’t move bags — ask them about 29 Nov.',
+    },
   },
-  plan1[2],
-  plan1[3],
+  { ...plan1[2], stay: DENGSHAN },
+  {
+    ...plan1[3],
+    stay: {
+      name: 'Hotel at Sun Moon Lake (to book)',
+      map: 'Shuishe Pier',
+      note: 'Shuishe village is the easiest base: restaurants, the main pier, bike rental and the sunrise boardwalk.',
+    },
+  },
   {
     date: '2026-12-02',
     title: 'Drive to Taipei, old town, Shilin & fly home',
@@ -170,7 +197,7 @@ export const daysV2: Day[] = [
       {
         time: '≈10:30',
         title: 'Return the car & store luggage',
-        details: 'One-way return at the rental branch near Taipei Main Station, then put bags in the station lockers.',
+        details: 'Return the car in Taipei if the rental company allows it (ask when you pick it up), then put bags in the Taipei Main Station lockers. If not, see the swap-in idea below about returning at the airport.',
         map: 'Taipei Main Station',
         at: [25.0478, 121.517],
         guess: true,
