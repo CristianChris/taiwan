@@ -181,7 +181,13 @@ function legHtml(leg: Leg) {
     </div>`;
 }
 
-function stopHtml(s: Stop, i: number, now: boolean) {
+/** Pin number for each stop of a day (1, 2, 3… for stops with a map pin, null otherwise) */
+function stopNumbers(day: Day): (number | null)[] {
+  let n = 0;
+  return day.stops.map((s) => (s.at ? ++n : null));
+}
+
+function stopHtml(s: Stop, i: number, now: boolean, num: number | null = null, color = '') {
   const badges = [
     now ? '<span class="badge badge-now">now</span>' : '',
     s.optional ? '<span class="badge badge-opt">optional</span>' : '',
@@ -191,7 +197,7 @@ function stopHtml(s: Stop, i: number, now: boolean) {
     <div class="stop-wrap" id="stop-${i}">
     ${s.getThere ? legHtml(s.getThere) : ''}
     <article class="stop${now ? ' is-now' : ''}${s.optional ? ' is-optional' : ''}">
-      <div class="stop-time">${esc(s.time)}</div>
+      <div class="stop-time">${num ? `<span class="stop-num" style="background:${color}" title="Pin ${num} on the map">${num}</span>` : ''}${esc(s.time)}</div>
       <div class="stop-main">
         <h3>${esc(s.title)} ${badges}</h3>
         <p>${esc(s.details)}</p>
@@ -245,7 +251,11 @@ function planView(date: string) {
       </header>
       ${flightCard}
       <div id="daymap" class="day-map" role="region" aria-label="Map of day ${idx + 1}"></div>
-      <div class="timeline">${day.stops.map((s, i) => stopHtml(s, i, i === nowIdx)).join('')}</div>
+      <div class="timeline">${(() => {
+        const nums = stopNumbers(day);
+        const c = DAY_COLORS[idx % DAY_COLORS.length];
+        return day.stops.map((s, i) => stopHtml(s, i, i === nowIdx, nums[i], c)).join('');
+      })()}</div>
       ${
         day.alternatives?.length
           ? `<section class="alts"><h3>Swap-in ideas</h3><ul>${day.alternatives.map((a) => `<li>${esc(a)}</li>`).join('')}</ul></section>`
@@ -377,20 +387,34 @@ function initMap(id = 'map', only = mapDay) {
     // start the line where the previous day ended, so travel between days shows too
     const prevEnd = i > 0 && only === 'all' ? [...days[i - 1].stops].reverse().find((s) => s.at)?.at : undefined;
     const path: L.LatLngTuple[] = prevEnd ? [prevEnd] : [];
-    const seen = new Set<string>();
-    d.stops.forEach((s) => {
+    const nums = stopNumbers(d);
+    // one pin per place per day; stops at the same place share it ("2·3")
+    const pins = new Map<string, { at: L.LatLngTuple; nums: number[]; labels: string[] }>();
+    d.stops.forEach((s, si) => {
       if (!s.at) return;
       const last = path[path.length - 1];
       if (!last || last[0] !== s.at[0] || last[1] !== s.at[1]) path.push(s.at);
       bounds.push(s.at);
       const key = s.at.join(',');
-      const label = `<strong>Day ${i + 1} · ${esc(s.time)}</strong><br>${esc(s.title)}<br>
+      const label = `<strong>${nums[si]}. Day ${i + 1} · ${esc(s.time)}</strong><br>${esc(s.title)}<br>
         <a href="#plan/${d.date}">Open day</a>${s.map ? ` · <a href="${mapUrl(s.map)}" target="_blank" rel="noopener">Google Maps ↗</a>` : ''}`;
-      if (seen.has(key)) return; // one pin per place per day
-      seen.add(key);
-      L.circleMarker(s.at, { radius: 8, color: '#fff', weight: 2, fillColor: color, fillOpacity: 1 })
+      const pin = pins.get(key) ?? { at: s.at, nums: [], labels: [] };
+      pin.nums.push(nums[si]!);
+      pin.labels.push(label);
+      pins.set(key, pin);
+    });
+    pins.forEach((p) => {
+      const text = p.nums.join('·');
+      L.marker(p.at, {
+        icon: L.divIcon({
+          className: 'num-pin',
+          html: `<span style="background:${color}">${text}</span>`,
+          iconSize: [0, 0],
+        }),
+        zIndexOffset: (days.length - i) * 100,
+      })
         .addTo(m)
-        .bindPopup(label);
+        .bindPopup(p.labels.join('<hr>'));
     });
     if (path.length > 1) L.polyline(path, { color, weight: 3, opacity: 0.8, dashArray: '6 6' }).addTo(m);
   });
