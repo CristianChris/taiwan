@@ -1,6 +1,7 @@
 import 'leaflet/dist/leaflet.css';
 import './style.css';
 import L from 'leaflet';
+import { about, RATINGS_CHECKED } from './about';
 import { trip, flights, places, tips, type Leg, type Stop, type Day, type Mode } from './trip';
 import { versions, type Version } from './versions';
 import drivesData from './drives.json';
@@ -148,7 +149,7 @@ function countdown(): string {
 }
 
 // ── Routing: #plan/<date> | #explore | #tips ──
-type View = { name: 'plan'; date: string } | { name: 'map' } | { name: 'explore' } | { name: 'tips' };
+type View = { name: 'plan'; date: string } | { name: 'about'; date: string; i: number } | { name: 'map' } | { name: 'explore' } | { name: 'tips' };
 
 function defaultDay() {
   const t = taiwanToday();
@@ -156,7 +157,12 @@ function defaultDay() {
 }
 
 function parseHash(): View {
-  const [name, arg] = location.hash.replace(/^#\/?/, '').split('/');
+  const [name, arg, arg2] = location.hash.replace(/^#\/?/, '').split('/');
+  if (name === 'about') {
+    const d = days.find((x) => x.date === arg);
+    const i = Number(arg2);
+    if (d && d.stops[i]) return { name: 'about', date: arg, i };
+  }
   if (name === 'explore') return { name: 'explore' };
   if (name === 'map') return { name: 'map' };
   if (name === 'tips') return { name: 'tips' };
@@ -182,12 +188,24 @@ function legHtml(leg: Leg) {
 }
 
 /** Pin number for each stop of a day (1, 2, 3… for stops with a map pin, null otherwise) */
+const fmtCount = (n: number) => n.toLocaleString('en-US');
+const reviewsUrl = (a: { name: string; q?: string }) =>
+  `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(a.q ?? a.name.replace(/\s*\(.*\)$/, ''))}`;
+function ratingHtml(map?: string, big = false) {
+  const a = map ? about[map] : undefined;
+  if (!a?.rating) return '';
+  const full = Math.round(a.rating);
+  const stars = '★★★★★'.slice(0, full) + '☆☆☆☆☆'.slice(0, 5 - full);
+  return `<a class="rating${big ? ' rating-big' : ''}" href="${reviewsUrl(a)}" target="_blank" rel="noopener" title="Google reviews, checked ${RATINGS_CHECKED}">
+    <span class="rating-num">${a.rating.toFixed(1)}</span><span class="stars" aria-hidden="true">${stars}</span><span class="rating-count">(${fmtCount(a.reviews ?? 0)}) Google ↗</span></a>`;
+}
+
 function stopNumbers(day: Day): (number | null)[] {
   let n = 0;
   return day.stops.map((s) => (s.at ? ++n : null));
 }
 
-function stopHtml(s: Stop, i: number, now: boolean, num: number | null = null, color = '') {
+function stopHtml(s: Stop, i: number, now: boolean, num: number | null = null, color = '', date = '') {
   const badges = [
     now ? '<span class="badge badge-now">now</span>' : '',
     s.optional ? '<span class="badge badge-opt">optional</span>' : '',
@@ -196,18 +214,67 @@ function stopHtml(s: Stop, i: number, now: boolean, num: number | null = null, c
   return `
     <div class="stop-wrap" id="stop-${i}">
     ${s.getThere ? legHtml(s.getThere) : ''}
-    <article class="stop${now ? ' is-now' : ''}${s.optional ? ' is-optional' : ''}">
+    <article class="stop is-link${now ? ' is-now' : ''}${s.optional ? ' is-optional' : ''}" data-about="#about/${date}/${i}" tabindex="0" role="link" aria-label="About ${esc(s.title)}">
       <div class="stop-time">${num ? `<span class="stop-num" style="background:${color}" title="Pin ${num} on the map">${num}</span>` : ''}${esc(s.time)}</div>
       <div class="stop-main">
         <h3>${esc(s.title)} ${badges}</h3>
+        ${ratingHtml(s.map)}
         <p>${esc(s.details)}</p>
         ${s.tips?.length ? `<ul class="stop-tips">${s.tips.map((t) => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}
         <div class="stop-actions">
           ${s.map ? `<a class="btn" href="${mapUrl(s.map)}" target="_blank" rel="noopener">📍 Map</a>` : ''}
+          <a class="btn btn-ghost" href="#about/${date}/${i}">About ›</a>
         </div>
       </div>
     </article>
     </div>`;
+}
+
+function aboutView(date: string, i: number) {
+  const di = days.findIndex((d) => d.date === date);
+  const day = days[di];
+  const s = day.stops[i];
+  const a = s.map ? about[s.map] : undefined;
+  const num = stopNumbers(day)[i];
+  const color = DAY_COLORS[di % DAY_COLORS.length];
+  const tips = [...(a?.good ?? []), ...(s.tips ?? [])];
+  const prev = i > 0 ? `<a class="btn btn-ghost" href="#about/${date}/${i - 1}">‹ Previous</a>` : '<span></span>';
+  const next = i < day.stops.length - 1 ? `<a class="btn btn-ghost" href="#about/${date}/${i + 1}">Next ›</a>` : '<span></span>';
+  return `
+    <section class="about">
+      <a class="back" href="#plan/${date}" data-back="${i}">‹ Back to Day ${di + 1}</a>
+      <div class="eyebrow">${num ? `<span class="stop-num" style="background:${color}">${num}</span>` : ''}Day ${di + 1} · ${esc(fmtDay(date, { weekday: 'short', day: 'numeric', month: 'short' }))} · ${esc(s.time)}</div>
+      <h2>${esc(a?.name ?? s.title)}</h2>
+      ${a?.name && a.name !== s.title ? `<div class="about-sub">${esc(s.title)}</div>` : ''}
+      ${ratingHtml(s.map, true)}
+      ${a?.rating ? `<div class="about-note">Google rating checked ${RATINGS_CHECKED}. Tap it to read the reviews.</div>` : ''}
+      ${a ? `<h3>About</h3><p>${esc(a.about)}</p>` : ''}
+      <h3>In your plan</h3>
+      <p>${esc(s.details)}</p>
+      ${s.getThere ? `<h3>Getting there</h3>${legHtml(s.getThere)}` : ''}
+      ${tips.length ? `<h3>Good to know</h3><ul class="stop-tips">${tips.map((t) => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}
+      ${s.at ? `<div id="aboutmap" class="day-map"></div>` : ''}
+      <div class="stop-actions">
+        ${s.map ? `<a class="btn" href="${mapUrl(s.map)}" target="_blank" rel="noopener">📍 Google Maps</a>` : ''}
+        ${a?.rating ? `<a class="btn btn-ghost" href="${reviewsUrl(a)}" target="_blank" rel="noopener">⭐ Reviews ↗</a>` : ''}
+      </div>
+      <div class="about-nav">${prev}${next}</div>
+    </section>`;
+}
+
+function initAboutMap(date: string, i: number) {
+  const el = document.getElementById('aboutmap');
+  const di = days.findIndex((d) => d.date === date);
+  const s = days[di]?.stops[i];
+  if (!el || !s?.at) return;
+  const m = L.map(el, { zoomControl: true });
+  leafletMap = m;
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '&copy; OpenStreetMap contributors' }).addTo(m);
+  const num = stopNumbers(days[di])[i];
+  L.marker(s.at, {
+    icon: L.divIcon({ className: 'num-pin', html: `<span style="background:${DAY_COLORS[di % DAY_COLORS.length]}">${num ?? ''}</span>`, iconSize: [0, 0] }),
+  }).addTo(m);
+  m.setView(s.at, 15);
 }
 
 function planView(date: string) {
@@ -254,7 +321,7 @@ function planView(date: string) {
       <div class="timeline">${(() => {
         const nums = stopNumbers(day);
         const c = DAY_COLORS[idx % DAY_COLORS.length];
-        return day.stops.map((s, i) => stopHtml(s, i, i === nowIdx, nums[i], c)).join('');
+        return day.stops.map((s, i) => stopHtml(s, i, i === nowIdx, nums[i], c, day.date)).join('');
       })()}</div>
       ${
         day.alternatives?.length
@@ -442,7 +509,7 @@ function render() {
     leafletMap = null;
   }
   const body =
-    view.name === 'plan' ? planView(view.date) : view.name === 'map' ? mapView() : view.name === 'explore' ? exploreView() : tipsView();
+    view.name === 'plan' ? planView(view.date) : view.name === 'about' ? aboutView(view.date, view.i) : view.name === 'map' ? mapView() : view.name === 'explore' ? exploreView() : tipsView();
   app.innerHTML = `
     <header class="top">
       <div>
@@ -463,7 +530,7 @@ function render() {
     </div>
     <main>${body}</main>
     <nav class="tabs" aria-label="Sections">
-      <a href="#plan/${view.name === 'plan' ? view.date : defaultDay()}" class="${view.name === 'plan' ? 'is-active' : ''}"><span>🗓️</span>Plan</a>
+      <a href="#plan/${view.name === 'plan' || view.name === 'about' ? view.date : defaultDay()}" class="${view.name === 'plan' || view.name === 'about' ? 'is-active' : ''}"><span>🗓️</span>Plan</a>
       <a href="#map" class="${view.name === 'map' ? 'is-active' : ''}"><span>🗺️</span>Map</a>
       <a href="#explore" class="${view.name === 'explore' ? 'is-active' : ''}"><span>📍</span>Explore</a>
       <a href="#tips" class="${view.name === 'tips' ? 'is-active' : ''}"><span>💡</span>Tips</a>
@@ -471,11 +538,23 @@ function render() {
   app.querySelector('.chip.is-active')?.scrollIntoView({ inline: 'center', block: 'nearest' });
   if (view.name === 'map') initMap();
   if (view.name === 'plan') initMap('daymap', view.date);
+  if (view.name === 'about') initAboutMap(view.date, view.i);
 }
 
 /** Plan for today opens at the stop happening now; everything else opens at the top. */
+let returnTo: { date: string; i: number } | null = null;
 function scrollToNow() {
   const view = parseHash();
+  if (view.name === 'about') return window.scrollTo(0, 0);
+  if (view.name === 'plan' && returnTo?.date === view.date) {
+    const el = document.getElementById(`stop-${returnTo.i}`);
+    returnTo = null;
+    if (el) {
+      const chips = document.querySelector('.chips') as HTMLElement | null;
+      return window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - (chips?.offsetHeight ?? 0) - 12 });
+    }
+  }
+  returnTo = null;
   const day = view.name === 'plan' ? days.find((d) => d.date === view.date) : undefined;
   const i = day ? currentStopIndex(day) : -1;
   const el = i > 0 ? document.getElementById(`stop-${i}`) : null;
@@ -501,6 +580,11 @@ app.addEventListener('click', (e) => {
     render();
     return;
   }
+  const card = t.closest<HTMLElement>('[data-about]');
+  if (card && !t.closest('a, button')) {
+    location.hash = card.dataset.about!;
+    return;
+  }
   const f = t.closest<HTMLButtonElement>('.filter');
   if (f) {
     exploreFilter = f.dataset.filter!;
@@ -508,9 +592,16 @@ app.addEventListener('click', (e) => {
   }
 });
 
-window.addEventListener('hashchange', () => {
+window.addEventListener('hashchange', (e) => {
+  const old = new URL(e.oldURL).hash.match(/^#about\/([\d-]+)\/(\d+)/);
+  if (old) returnTo = { date: old[1], i: Number(old[2]) };
   render();
   scrollToNow();
 });
 render();
 scrollToNow();
+
+app.addEventListener('keydown', (e) => {
+  const card = (e.target as HTMLElement).closest<HTMLElement>('[data-about]');
+  if (card && e.key === 'Enter' && e.target === card) location.hash = card.dataset.about!;
+});
