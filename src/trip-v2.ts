@@ -154,9 +154,68 @@ export const daysV2: Day[] = [
       note: 'First night in Alishan. Easiest is to stay at Ali-Shan Dengshan Hotel both nights, so you don’t move bags — ask them about 29 Nov.',
     },
   },
-  { ...plan1[2], stay: DENGSHAN },
+  {
+    ...plan1[2],
+    title: 'Alishan forest trains & Tataka',
+    summary:
+      'A slow morning in the forest: a ride on the little Shenmu line train and the giant cypress trees, then a scenic afternoon drive to Tataka on the edge of Yushan (Jade Mountain) National Park. Second night in Alishan — the sunrise train is tomorrow morning.',
+    heads_up: 'Early night: tomorrow’s sunrise train leaves before dawn. Buy breakfast snacks at the 7-Eleven in the village tonight.',
+    stops: [
+      {
+        time: '08:00',
+        title: 'Breakfast & morning walk',
+        details: 'Hotel breakfast, then an easy walk around the village and Zhaoping park while the morning mist lifts.',
+        map: 'Alishan Station',
+        at: [23.5103, 120.804],
+      },
+      ...plan1[2].stops.slice(2),
+    ],
+    alternatives: [
+      'Instead of Tataka: drive down to Shizhuo (石桌) tea plantations (≈30 min) for tea fields above the clouds and a tea tasting.',
+    ],
+    stay: DENGSHAN,
+  },
   {
     ...plan1[3],
+    title: 'Alishan sunrise → mountain drive to Sun Moon Lake',
+    area: 'Zhushan sunrise · Alishan → Ruili → Sun Moon Lake',
+    summary:
+      "Sunrise train to Zhushan (booked) for the sea of clouds, breakfast back in the village, then the mountain drive through the tea and bamboo country of Ruili to Sun Moon Lake. Afternoon lake cruise and temples, evening at Ita Thao's lakeside night street.",
+    heads_up:
+      'Very early start (≈04:30) and near-freezing at sunrise — wear all your layers. Then ≈3 h of mountain driving (≈113 km): leave by 09:30 and take breaks. Roads can close after landslides/heavy rain; check road status (1968 app) before leaving. Overnight at Sun Moon Lake.',
+    stops: [
+      {
+        time: '≈05:00',
+        title: 'Sunrise train to Zhushan',
+        details:
+          'Your Alishan Forest Railway sunrise ticket is booked. Board the Zhushan line at Alishan station (≈25 min ride) to the viewing deck. Sunrise ≈06:25; sea of clouds and Jade Mountain on clear mornings.',
+        map: 'Zhushan Sunrise Viewing Platform',
+        at: [23.5088, 120.8174],
+        booked: true,
+        tips: [
+          'The exact departure time depends on the sunrise and is announced the day before — check your e-ticket and the board at Alishan station on 30 Nov.',
+          'Have the e-ticket / QR code ready on your phone, and be at the station ≈20 min early.',
+        ],
+        getThere: { mode: 'train', how: 'Zhushan line from Alishan station (walk ≈10 min from the hotel)', duration: '≈25 min' },
+      },
+      {
+        time: '07:15',
+        title: 'Walk down & breakfast, check out',
+        details: 'Take the ≈1 h trail back down via Duigaoyue (or the train back), then hotel breakfast and check out.',
+        map: 'Alishan Station',
+        at: [23.5103, 120.804],
+        getThere: { mode: 'walk', how: 'Zhushan → Alishan trail (downhill), or the train back', duration: '≈1 h' },
+      },
+      { ...plan1[3].stops[0], time: '09:30', title: 'Drive to Sun Moon Lake' },
+      { ...plan1[3].stops[1], time: '13:00' },
+      { ...plan1[3].stops[2], time: '14:30' },
+      { ...plan1[3].stops[3], time: '15:45' },
+      ...plan1[3].stops.slice(4),
+    ],
+    alternatives: [
+      'Cloudy or rainy morning? Sunrise trains still run, but you may only see mist — the giant trees on the walk down are beautiful in fog too.',
+      ...(plan1[3].alternatives ?? []),
+    ],
     stay: {
       name: 'Hotel at Sun Moon Lake (to book)',
       map: 'Shuishe Pier',

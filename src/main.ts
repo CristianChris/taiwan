@@ -210,6 +210,7 @@ function stopHtml(s: Stop, i: number, now: boolean, num: number | null = null, c
     now ? '<span class="badge badge-now">now</span>' : '',
     s.optional ? '<span class="badge badge-opt">optional</span>' : '',
     s.guess ? '<span class="badge badge-guess" title="An assumption — please check">guess</span>' : '',
+    s.booked ? '<span class="badge badge-booked">booked</span>' : '',
   ].join('');
   return `
     <div class="stop-wrap" id="stop-${i}">

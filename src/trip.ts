@@ -37,6 +37,8 @@ export interface Stop {
   getThere?: Leg;
   optional?: boolean;
   guess?: boolean;
+  /** Ticket / reservation already made */
+  booked?: boolean;
 }
 
 export interface Day {
