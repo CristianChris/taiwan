@@ -76,12 +76,6 @@ export const PARKING: Record<string, Parking> = {
     price: 'about NT$30 per hour',
     pay: MACHINE,
   },
-  '谷關溫泉': {
-    name: 'Guguan public car park building (谷關公共停車場大樓)',
-    at: [24.2030852, 121.0055407],
-    price: 'about NT$30 per hour, or a flat day fee',
-    pay: MACHINE,
-  },
   'Dragon Valley Hotel': {
     name: 'Dragon Valley Hotel, guest parking',
     at: [24.2031684, 121.0044866],

@@ -27,7 +27,7 @@ export const daysV2: Day[] = [
     title: 'Old Mountain Line → Taichung → Guguan hot springs',
     area: 'Taoyuan · Sanyi (Old Mountain Line) · Taichung · Guguan',
     summary:
-      'Pick up the car at 07:30 and drive south to the Old Mountain Line: Shengxing station and the Longteng broken bridge. Then a taste of Taichung (Miyahara, the Second Market, Taichung Park) and up into the mountains to the Guguan hot-spring street. Check in at Dragon Valley Hotel, right on the Guguan hot-spring street, around 18:00 and soak in the hot springs.',
+      'Pick up the car at 07:30 and drive south to the Old Mountain Line: Shengxing station and the Longteng broken bridge. Then a taste of Taichung (Miyahara, the Second Market, Taichung Park) and up into the mountains to Guguan. Check in at Dragon Valley Hotel around 17:00, then walk the hot-spring street and soak in the hot springs.',
     heads_up:
       'Long first day after a red-eye: ≈4 h of driving in total. Sleep on the plane, swap drivers if you both have an IDP, and keep Taichung short if you are tired. Sunset is ≈17:10, so the last mountain drive is in the dusk — take it slowly.',
     stops: [
@@ -109,21 +109,22 @@ export const daysV2: Day[] = [
       },
       {
         time: '17:00',
-        title: 'Guguan hot-spring street (谷關溫泉 · Mingzhi area)',
+        title: 'Check in at Dragon Valley Hotel',
         details:
-          'A small hot-spring village in the Dajia River gorge: the old street, the suspension bridge, the hot-spring park and Mingzhi Hot Spring Hotel. A short walk before dark: the hotel is right on the street.',
-        map: '谷關溫泉',
-        at: [24.2033, 121.0092],
-        getThere: { mode: 'car', how: 'Freeway 4 / Hwy 3 → Dongshi → Hwy 8 east', duration: '≈1h20 (≈60 km)', from: '審計新村', to: '谷關溫泉' },
-      },
-      {
-        time: '18:00',
-        title: 'Check in at Dragon Valley Hotel, hot-spring evening',
-        details: 'Check-in from 15:00. Dinner at the hotel or on the Guguan street, then the hot-spring baths. Early night.',
+          'Check in first (from 15:00), drop the bags and leave the car at the hotel. The Guguan hot-spring street is a few minutes’ walk away.',
         map: 'Dragon Valley Hotel',
         at: [24.2031684, 121.0044866],
         booked: true,
-        getThere: { mode: 'car', how: 'Along Dongguan Rd on the Guguan street', duration: '≈2 min', from: '谷關溫泉', to: 'Dragon Valley Hotel' },
+        getThere: { mode: 'car', how: 'Freeway 4 / Hwy 3 → Dongshi → Hwy 8 east', duration: '≈1h20 (≈60 km)', from: '審計新村', to: 'Dragon Valley Hotel' },
+      },
+      {
+        time: '17:30',
+        title: 'Walk the Guguan hot-spring street (谷關溫泉 · Mingzhi area), dinner, onsen',
+        details:
+          'A small hot-spring village in the Dajia River gorge: the old street, the suspension bridge, the hot-spring park and Mingzhi Hot Spring Hotel. Walk it at dusk, have dinner on the street or at the hotel, then back for the hot-spring baths and an early night.',
+        map: '谷關溫泉',
+        at: [24.2033, 121.0092],
+        getThere: { mode: 'walk', how: 'Along Dongguan Rd from the hotel', duration: '≈5 min', from: 'Dragon Valley Hotel', to: '谷關溫泉' },
       },
     ],
     alternatives: [

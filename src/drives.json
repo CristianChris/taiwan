@@ -59,14 +59,14 @@
   {
     "id": "taichung-guguan",
     "day": "2026-11-28",
-    "label": "Taichung → Guguan hot springs",
+    "label": "Taichung → Guguan (Dragon Valley Hotel)",
     "from": [
       24.1446,
       120.6628
     ],
     "to": [
-      24.2033,
-      121.0092
+      24.2031684,
+      121.0044866
     ],
     "roads": "Freeway 4 / Hwy 3 → Dongshi → Hwy 8 east",
     "km": 60,
