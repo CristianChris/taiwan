@@ -49,6 +49,11 @@ export const daysV2: Day[] = [
         map: IWS,
         at: [25.0614, 121.2052],
         booked: true,
+        images: [
+          { src: 'img/iws-step2-tourist-center.jpg', caption: 'Step 2 — after customs turn right; the Tourist Service Center is on your left.' },
+          { src: 'img/iws-step3-pickup-signs.jpg', caption: 'Step 3 — follow the "Pick up area" (小客車接送區) sign to Exit 18.' },
+          { src: 'img/iws-step4-exit-18.jpg', caption: 'Step 4 — wait right under the number 18 sign and call IWS.' },
+        ],
         tips: [
           'IWS opens at 08:00. A pick-up between 07:00 and 08:00 only works if it was reserved when you booked — check your booking, or plan for 08:00.',
           'From a foreign SIM: +886 3 386 2555. Text help (08:30–17:30): LINE @560lxvmi or WhatsApp +886 966 166 071 — they can’t take calls on those.',
@@ -322,9 +327,9 @@ export const daysV2: Day[] = [
     title: 'Zhushan sunrise → nap → Sun Moon Lake (Ita Thao)',
     area: 'Zhushan · Alishan → Sun Moon Lake (Ita Thao)',
     summary:
-      'Sunrise train to Zhushan (booked), walk back down the forest trail, then a nap before the 11:00 check-out. Drive to Sun Moon Lake, check in at Ita Thao, ride the ropeway (it is closed tomorrow), watch the sunset at the pier and eat at the Ita Thao night street.',
+      'Sunrise train to Zhushan (booked), walk back down the forest trail, then a nap before the 11:00 check-out. Drive to Sun Moon Lake, check in at Ita Thao, optionally ride the ropeway (it is closed tomorrow), watch the sunset at the pier and eat at the Ita Thao night street.',
     heads_up:
-      'Alarm ≈04:30 and near-freezing at sunrise — all your layers. The ropeway closes on the first Wednesday of the month, which is tomorrow, so ride it today (last tickets 15:30 on weekdays). ≈3 h mountain drive: check road status (1968 app) before leaving.',
+      'Alarm ≈04:30 and near-freezing at sunrise — all your layers. Optional ropeway: it closes on the first Wednesday of the month (tomorrow), so today is the only chance (last tickets 15:30 on weekdays). ≈3 h mountain drive: check road status (1968 app) before leaving.',
     stops: [
       {
         time: '≈05:00',
@@ -386,6 +391,7 @@ export const daysV2: Day[] = [
           'Gondola from Ita Thao over the hills to the Formosan Aboriginal Culture Village, with big lake views. Weekday hours 10:30–16:00, last tickets 15:30. It is closed tomorrow (first Wednesday of the month).',
         map: 'Sun Moon Lake Ropeway',
         at: [23.8517, 120.9363],
+        optional: true,
       },
       {
         time: '17:00',
@@ -417,12 +423,12 @@ export const daysV2: Day[] = [
   // ── Day 5 ──
   {
     date: '2026-12-02',
-    title: 'Lake morning → Taipei → return the car → fly home',
-    area: 'Sun Moon Lake → Taipei (Dadaocheng) → Dayuan (IWS) → Taoyuan Airport',
+    title: 'Lake morning → Taipei: return the car, old town & Shilin → fly home',
+    area: 'Sun Moon Lake → Taipei Main Station · Dadaocheng · Shilin → Taoyuan Airport',
     summary:
-      'Boat across the lake in the morning (the ropeway is closed today), then drive to Taipei for a short old-town visit, return the car to IWS by 19:30 and take their shuttle to Terminal 1 for the 23:20 flight.',
+      'Boat across the lake in the morning, then drive to Taipei Main Station, return the car, leave the bags in the station lockers and explore Taipei by MRT: Dadaocheng and Dihua Street, sunset at the wharf, dinner at Shilin Night Market. Back to Taipei Main for the bags and the Airport MRT to Terminal 1.',
     heads_up:
-      'The car must be back at IWS before 20:00 (office hours 08:00–20:00) — aim for 19:30. Leave the lake by 12:00 at the latest. Freeway traffic into Taipei can add 30–60 min.',
+      'Leave the lake by 12:00 — freeway traffic into Taipei can add 30–60 min. Confirm with IWS where and until when you can drop the car at Taipei Main Station. Be on the Airport MRT by ≈19:30 for the 23:20 flight.',
     stops: [
       {
         time: '08:00',
@@ -435,13 +441,13 @@ export const daysV2: Day[] = [
         time: '09:00',
         title: 'Lake boat: Ita Thao → Xuanguang Temple → Shuishe',
         details:
-          'Hop-on boat pass (≈NT$300): Xuanguang Temple (Ah Po tea eggs) and Shuishe, then back to Ita Thao. ≈2 h with stops.',
+          'Hop-on boat pass (≈NT$300): Xuanguang Temple (Ah Po tea eggs) and Shuishe, then back to Ita Thao. ≈2 h with stops. The ropeway is closed today (first Wednesday of the month).',
         map: 'Xuanguang Temple',
         at: [23.8494, 120.9225],
         getThere: { mode: 'boat', how: 'Hop-on boat between the three piers', duration: '≈10–15 min per hop', cost: '≈NT$300 pp' },
       },
       {
-        time: '11:00',
+        time: '11:15',
         title: 'Wenwu Temple viewpoint',
         details: 'Big temple on the north shore with a famous lake view from the top terrace (4.7★). On the drive out.',
         map: '文武廟 日月潭',
@@ -451,18 +457,29 @@ export const daysV2: Day[] = [
       {
         time: '11:45',
         title: 'Drive to Taipei',
-        details: 'Lunch at a freeway service area (Xihu or Qingshui). Refuel before returning the car.',
-        map: 'Dihua Street',
-        at: [25.0565, 121.51],
-        getThere: { mode: 'car', how: 'Hwy 21 → Freeway 6 → Freeway 3 north → Taipei', duration: '≈3h (≈200 km)', from: '文武廟 日月潭', to: 'Dihua Street' },
+        details: 'Lunch at a freeway service area on the way (e.g. Xihu or Guanxi). Refuel near Taipei before returning the car.',
+        map: 'Taipei Main Station',
+        at: [25.0478, 121.517],
+        getThere: { mode: 'car', how: 'Hwy 21 → Freeway 6 → Freeway 3 north → Taipei', duration: '≈3h (≈200 km)', from: '文武廟 日月潭', to: 'Taipei Main Station' },
       },
       {
-        time: '15:00',
+        time: '≈14:45',
+        title: 'Return the car at Taipei Main Station, store luggage',
+        details:
+          'Drop the car with IWS at Taipei Main Station, then put the bags in the station’s coin lockers (EasyCard works) — or use the luggage service in the station. Big lockers fill up, so look around both the MRT and the train halls.',
+        map: 'Taipei Main Station',
+        at: [25.0478, 121.517],
+        guess: true,
+        tips: ['Confirm the exact drop-off point (car park) with IWS before the day.', 'Take photos of the fuel gauge and the car when you hand it back.'],
+      },
+      {
+        time: '15:15',
         title: 'Dadaocheng & Dihua Street',
         details:
-          "Taipei's best-preserved old town: shophouses, dried goods, tea, Xiahai City God Temple — good for souvenirs. Park in a public car park nearby.",
+          "Taipei's best-preserved old town: 19th-century shophouses, dried goods and tea shops, Xiahai City God Temple — good for souvenirs.",
         map: 'Dihua Street',
         at: [25.0565, 121.51],
+        getThere: { mode: 'mrt', how: 'Green line Taipei Main → Beimen (1 stop), exit 3', duration: '≈10 min', from: 'Taipei Main Station', to: 'Dihua Street' },
       },
       {
         time: '16:45',
@@ -470,24 +487,24 @@ export const daysV2: Day[] = [
         details: 'Riverside container bars and food stalls; sunset ≈17:05.',
         map: 'Dadaocheng Wharf',
         at: [25.0563, 121.5083],
-        optional: true,
         getThere: { mode: 'walk', how: 'Walk west to the river', duration: '≈10 min' },
       },
       {
         time: '17:30',
-        title: 'Early dinner: Ningxia Night Market',
+        title: 'Night market: Shilin Night Market',
         details:
-          'A compact, food-only night market ≈10 min from Dihua Street: oyster omelette, taro balls, braised pork rice. Faster than Shilin when you have a car to return.',
-        map: 'Ningxia Night Market',
-        at: [25.0566, 121.5155],
+          'Last dinner in Taiwan: giant fried chicken, oyster omelette, pepper buns and the underground food court. Get off at Jiantan station; early evening is less crowded.',
+        map: 'Shilin Night Market',
+        at: [25.088, 121.5241],
+        getThere: { mode: 'mrt', how: 'Walk to Daqiaotou, orange → red line to Jiantan (or taxi ≈15 min)', duration: '≈30 min', from: 'Dadaocheng Wharf', to: 'Jiantan Station' },
       },
       {
-        time: '19:30',
-        title: 'Return the car at IWS → shuttle to Terminal 1',
-        details: 'Back to No. 309 Zhongzheng E. Rd., Dayuan before 20:00; their shuttle takes you to the terminal (≈10 min). Check in from ≈20:20.',
-        map: IWS,
-        at: [25.0614, 121.2052],
-        getThere: { mode: 'car', how: 'Freeway 1 / Airport Expressway (Hwy 4) west', duration: '≈50 min', from: 'Ningxia Night Market', to: IWS },
+        time: '19:00',
+        title: 'Back to Taipei Main → Airport MRT',
+        details: 'Red line Jiantan → Taipei Main (≈15 min), collect the bags, Airport MRT Express (purple) to Terminal 1 (≈35–40 min). Arrive ≈20:15.',
+        map: 'Taoyuan International Airport',
+        at: [25.0797, 121.2342],
+        getThere: { mode: 'mrt', how: 'Red line → Taipei Main, then Airport MRT Express', duration: '≈15 min + ≈40 min', cost: '≈NT$160 pp', from: 'Jiantan Station', to: 'Taoyuan International Airport' },
       },
       {
         time: '23:20',
@@ -497,8 +514,8 @@ export const daysV2: Day[] = [
       },
     ],
     alternatives: [
-      'Easier last day: skip Taipei. Lake morning + Xiangshan cycling, then Daxi Old Street (大溪老街, ≈30 min from IWS) on the way, and return the car early.',
-      'Really want Shilin Night Market? It is ≈25 min from Dihua Street by car and busy — only if you are ahead of schedule.',
+      'Running late? Swap Shilin for Ningxia Night Market — 15 min walk from Dadaocheng Wharf and 10 min from Taipei Main, so you can skip the MRT ride.',
+      'Arriving in Taipei early? Add Longshan Temple and Bopiliao (blue line, 2 stops from Taipei Main) before Dadaocheng.',
     ],
   },
 ];

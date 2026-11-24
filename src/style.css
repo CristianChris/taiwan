@@ -407,3 +407,9 @@ main {
 .stay h3 { margin: 4px 0 2px; font-size: 1.05rem; }
 .stay .small { font-size: 0.82rem; }
 .badge.badge-booked { background: #2f7d4f; color: #fff; }
+
+/* Photos on a stop (e.g. the IWS pick-up steps) */
+.photos { display: grid; gap: 10px; margin: 10px 0 4px; }
+.photos figure { margin: 0; }
+.photos img { width: 100%; height: auto; border-radius: 10px; border: 1px solid var(--line); display: block; }
+.photos figcaption { font-size: 0.82rem; color: var(--muted); margin-top: 4px; }

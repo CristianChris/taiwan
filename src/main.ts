@@ -186,6 +186,16 @@ function stopNumbers(day: Day): (number | null)[] {
   return day.stops.map((s) => (s.at ? ++n : null));
 }
 
+function imagesHtml(s: Stop) {
+  if (!s.images?.length) return '';
+  return `<div class="photos">${s.images
+    .map(
+      (im) =>
+        `<figure><a href="${esc(im.src)}" target="_blank" rel="noopener"><img src="${esc(im.src)}" alt="${esc(im.caption)}" loading="lazy" /></a><figcaption>${esc(im.caption)}</figcaption></figure>`,
+    )
+    .join('')}</div>`;
+}
+
 function droneHtml(map?: string, long = false) {
   const d = map ? DRONE[map] : undefined;
   if (!d) return '';
@@ -223,6 +233,7 @@ function stopHtml(s: Stop, i: number, now: boolean, num: number | null = null, c
         ${droneHtml(s.map)}
         <p>${esc(s.details)}</p>
         ${s.tips?.length ? `<ul class="stop-tips">${s.tips.map((t) => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}
+        ${imagesHtml(s)}
         <div class="stop-actions">
           ${s.map ? `<a class="btn" href="${mapUrl(s.map)}" target="_blank" rel="noopener">📍 Map</a>` : ''}
           <a class="btn btn-ghost" href="#about/${date}/${i}">About ›</a>
@@ -255,6 +266,7 @@ function aboutView(date: string, i: number) {
       <h3>In your plan</h3>
       <p>${esc(s.details)}</p>
       ${s.getThere ? `<h3>Getting there</h3>${legHtml(s.getThere)}` : ''}
+      ${s.images?.length ? `<h3>Photos</h3>${imagesHtml(s)}` : ''}
       ${tips.length ? `<h3>Good to know</h3><ul class="stop-tips">${tips.map((t) => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}
       ${s.at ? `<div id="aboutmap" class="day-map"></div>` : ''}
       <div class="stop-actions">

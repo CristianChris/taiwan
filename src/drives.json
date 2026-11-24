@@ -211,37 +211,18 @@
   {
     "id": "sml-taipei",
     "day": "2026-12-02",
-    "label": "Sun Moon Lake → Taipei (Dihua Street)",
+    "label": "Sun Moon Lake → Taipei Main Station (return the car)",
     "from": [
       23.87,
       120.9276
     ],
     "to": [
-      25.0565,
-      121.51
+      25.0478,
+      121.517
     ],
     "roads": "Hwy 21 → Freeway 6 → Freeway 3 north",
     "km": 200,
     "time": "≈3h",
-    "versions": [
-      "v2"
-    ]
-  },
-  {
-    "id": "taipei-iws",
-    "day": "2026-12-02",
-    "label": "Taipei → IWS (Dayuan), return the car",
-    "from": [
-      25.0566,
-      121.5155
-    ],
-    "to": [
-      25.0614,
-      121.2052
-    ],
-    "roads": "Freeway 1 / Airport Expressway west",
-    "km": 40,
-    "time": "≈50 min",
     "versions": [
       "v2"
     ]
