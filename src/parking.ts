@@ -82,11 +82,12 @@ export const PARKING: Record<string, Parking> = {
     price: 'about NT$30 per hour, or a flat day fee',
     pay: MACHINE,
   },
-  'Goya Spring Resort': {
-    name: 'Goya Spring Resort, guest parking',
-    at: [24.1613, 120.9577],
-    price: 'Free for hotel guests (usual for resorts here)',
+  'Dragon Valley Hotel': {
+    name: 'Dragon Valley Hotel, guest parking',
+    at: [24.2031684, 121.0044866],
+    price: 'Free for hotel guests (usual here)',
     pay: HOTEL,
+    note: 'Park at the hotel and walk the Guguan street from there. If the hotel lot is full, the Guguan public car park building is next door.',
   },
   'Wenhua Road Night Market Chiayi': {
     name: 'Dudufang parking, Chiayi West Market (嘟嘟房)',

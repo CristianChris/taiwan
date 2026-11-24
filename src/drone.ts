@@ -35,7 +35,7 @@ export const DRONE: Record<string, { status: DroneStatus; note: string }> = {
   '宮原眼科': { status: 'no', note: 'Central Taichung, crowds.' },
   '審計新村': { status: 'no', note: 'City lane with crowds.' },
   '谷關溫泉': { status: 'check', note: 'Mountain gorge and suspension bridge — scenic, but check the CAA map and local signs; don’t fly over the hot-spring street.' },
-  'Goya Spring Resort': { status: 'check', note: 'Ask the hotel; never over the outdoor baths.' },
+  'Dragon Valley Hotel': { status: 'check', note: 'Ask the hotel; never over the outdoor baths or the hot-spring street.' },
   '檜意森活村': { status: 'no', note: 'Central Chiayi is mostly a red (no-fly) zone.' },
   '阿里山森林鐵路北門車站': { status: 'no', note: 'Central Chiayi red zone.' },
   '嘉義市立美術館': { status: 'no', note: 'Central Chiayi red zone.' },

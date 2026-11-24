@@ -13,6 +13,8 @@ const DENGSHAN: Stay = {
   address: 'East 47, Alishan National Forest Recreation Area, Alishan Township, Chiayi County',
   note: 'In Alishan village, a short walk from Alishan station, where the sunrise train leaves.',
   booked: true,
+  checkIn: '15:00',
+  checkOut: '11:00',
 };
 
 const IWS = '桃園市大園區中正東路309號';
@@ -25,7 +27,7 @@ export const daysV2: Day[] = [
     title: 'Old Mountain Line → Taichung → Guguan hot springs',
     area: 'Taoyuan · Sanyi (Old Mountain Line) · Taichung · Guguan',
     summary:
-      'Pick up the car at 07:30 and drive south to the Old Mountain Line: Shengxing station and the Longteng broken bridge. Then a taste of Taichung (Miyahara, the Second Market, Taichung Park) and up into the mountains to the Guguan hot-spring street. Check in at Goya Spring Resort around 18:00 and soak in the onsen.',
+      'Pick up the car at 07:30 and drive south to the Old Mountain Line: Shengxing station and the Longteng broken bridge. Then a taste of Taichung (Miyahara, the Second Market, Taichung Park) and up into the mountains to the Guguan hot-spring street. Check in at Dragon Valley Hotel, right on the Guguan hot-spring street, around 18:00 and soak in the hot springs.',
     heads_up:
       'Long first day after a red-eye: ≈4 h of driving in total. Sleep on the plane, swap drivers if you both have an IDP, and keep Taichung short if you are tired. Sunset is ≈17:10, so the last mountain drive is in the dusk — take it slowly.',
     stops: [
@@ -109,32 +111,34 @@ export const daysV2: Day[] = [
         time: '17:00',
         title: 'Guguan hot-spring street (谷關溫泉 · Mingzhi area)',
         details:
-          'A small hot-spring village in the Dajia River gorge: the old street, the suspension bridge, the hot-spring park and Mingzhi Hot Spring Hotel. A short walk before dark, then back down to the hotel.',
+          'A small hot-spring village in the Dajia River gorge: the old street, the suspension bridge, the hot-spring park and Mingzhi Hot Spring Hotel. A short walk before dark: the hotel is right on the street.',
         map: '谷關溫泉',
         at: [24.2033, 121.0092],
         getThere: { mode: 'car', how: 'Freeway 4 / Hwy 3 → Dongshi → Hwy 8 east', duration: '≈1h20 (≈60 km)', from: '審計新村', to: '谷關溫泉' },
       },
       {
         time: '18:00',
-        title: 'Check in at Goya Spring Resort, onsen evening',
-        details: 'Dinner at or near the hotel, then the hot-spring baths. Early night.',
-        map: 'Goya Spring Resort',
-        at: [24.1613, 120.9577],
+        title: 'Check in at Dragon Valley Hotel, hot-spring evening',
+        details: 'Check-in from 15:00. Dinner at the hotel or on the Guguan street, then the hot-spring baths. Early night.',
+        map: 'Dragon Valley Hotel',
+        at: [24.2031684, 121.0044866],
         booked: true,
-        getThere: { mode: 'car', how: 'Hwy 8 back west (Dongguan Rd)', duration: '≈20 min', from: '谷關溫泉', to: 'Goya Spring Resort' },
+        getThere: { mode: 'car', how: 'Along Dongguan Rd on the Guguan street', duration: '≈2 min', from: '谷關溫泉', to: 'Dragon Valley Hotel' },
       },
     ],
     alternatives: [
-      'Too tired after the flight? Skip Taichung city: Old Mountain Line → straight to Guguan (≈1h40), check in by 15:30 and enjoy a long onsen afternoon.',
+      'Too tired after the flight? Skip Taichung city: Old Mountain Line → straight to Guguan (≈1h40), check in at 15:00 and enjoy a long hot-spring afternoon.',
       'Or skip the Old Mountain Line and do Taichung + Rainbow Village instead (Freeway 3 straight to Taichung ≈1h45).',
     ],
     stay: {
-      name: 'Goya Spring Resort (谷野會館)',
-      map: 'Goya Spring Resort',
-      at: [24.1613, 120.9577],
-      address: "36 Lileng Lane, Dongguan Rd Sec. 1, Bo'ai Village, Heping District, Taichung",
-      note: 'Hot-spring resort on the road up to Guguan. Use the onsen tonight and before breakfast.',
+      name: 'Dragon Valley Hotel & Paradise (龍谷大飯店)',
+      map: 'Dragon Valley Hotel',
+      at: [24.2031684, 121.0044866],
+      address: 'No. 138, Sec. 1, Dongguan Rd, Heping District, Taichung (Guguan) · +886 4 2595 1369',
+      note: 'Big hot-spring hotel in the middle of the Guguan hot-spring street, with indoor and outdoor hot-spring pools. Use them tonight and before breakfast.',
       booked: true,
+      checkIn: '15:00',
+      checkOut: '11:00',
     },
   },
   // ── Day 2 ──
@@ -149,9 +153,9 @@ export const daysV2: Day[] = [
       {
         time: '07:30',
         title: 'Morning onsen & breakfast',
-        details: 'Last soak in the hot springs, breakfast, check out by 09:30.',
-        map: 'Goya Spring Resort',
-        at: [24.1613, 120.9577],
+        details: 'Last soak in the hot springs, breakfast, check out by 09:30 (latest check-out is 11:00).',
+        map: 'Dragon Valley Hotel',
+        at: [24.2031684, 121.0044866],
       },
       {
         time: '11:45',
@@ -160,7 +164,7 @@ export const daysV2: Day[] = [
           "Chiayi's signature dish — shredded turkey over rice with fried shallots. Try the famous shops around the central fountain roundabout and Wenhua Road (e.g. 噴水雞肉飯).",
         map: 'Wenhua Road Night Market Chiayi',
         at: [23.479, 120.4495],
-        getThere: { mode: 'car', how: 'Hwy 8 → Freeway 4 → Freeway 1 or 3 south → Chiayi', duration: '≈2h10 (≈150 km)', from: 'Goya Spring Resort', to: 'Chiayi Station' },
+        getThere: { mode: 'car', how: 'Hwy 8 → Freeway 4 → Freeway 1 or 3 south → Chiayi', duration: '≈2h20 (≈155 km)', from: 'Dragon Valley Hotel', to: 'Chiayi Station' },
       },
       {
         time: '12:45',
@@ -225,6 +229,8 @@ export const daysV2: Day[] = [
       address: 'Leye Village, Alishan Township, Chiayi County (Shizhuo area)',
       note: 'In the tea country at ≈1,300 m, steps from the Mist Trail and the tea terraces. Saiji Tea House is next door.',
       booked: true,
+      checkIn: '15:00',
+      checkOut: '11:00',
     },
   },
   // ── Day 3 ──
@@ -269,7 +275,7 @@ export const daysV2: Day[] = [
         time: '14:00',
         title: 'Alishan: check in, collect the sunrise-train ticket',
         details:
-          'Pay at the forest recreation area gate, drop the bags at Dengshan, and collect tomorrow’s sunrise ticket at the Alishan station counter (passport + reservation number from your confirmation).',
+          'Pay at the forest recreation area gate, drop the bags at Dengshan (room check-in is from 15:00, so leave the bags at reception if the room is not ready), and collect tomorrow’s sunrise ticket at the Alishan station counter (passport + reservation number from your confirmation).',
         map: 'Alishan Station',
         at: ALISHAN,
         getThere: { mode: 'car', how: 'Hwy 18 east to the Alishan gate', duration: '≈40 min', from: 'Saiji Tea House', to: 'Alishan Forest Recreation Area' },
@@ -407,6 +413,9 @@ export const daysV2: Day[] = [
       name: 'Hotel in Ita Thao (to book)',
       map: 'Ita Thao Night Market',
       at: [23.8481, 120.9306],
+      checkIn: '15:00',
+      checkOut: '11:00',
+      timesGuess: true,
       note:
         'Ideas near the old street (Google ratings, 24 Nov): Wyndham Sun Moon Lake 4.5★ (2,755) — upscale with hot-spring baths; Ming Yue Hu Hotel 4.6★ (1,432) and 湖悦景觀旅店 4.4★ (1,027) — front-row lake views; 日月潭水漾 4.5★ (1,509); Zhen House 珍棧民宿 4.8★ (795) — small B&B. Ask for parking.',
     },

@@ -224,6 +224,13 @@ function stayHtml(st: Stay) {
       <div class="stay-kicker">🏨 Tonight</div>
       <h3>${esc(st.name)} ${badge}</h3>
       ${st.booked ? ratingHtml(st.map) : ''}
+      ${
+        st.checkIn || st.checkOut
+          ? `<div class="stay-times">${st.checkIn ? `<span>🔑 Check-in from <strong>${esc(st.checkIn)}</strong></span>` : ''}${
+              st.checkOut ? `<span>🧳 Check-out by <strong>${esc(st.checkOut)}</strong></span>` : ''
+            }${st.timesGuess ? '<span class="muted small">(usual times, check your booking)</span>' : ''}</div>`
+          : ''
+      }
       ${st.address ? `<div class="small muted">${esc(st.address)}</div>` : ''}
       <p class="muted">${esc(st.note)}</p>
       <div class="stop-actions"><a class="btn" href="${mapUrl(st.map)}" target="_blank" rel="noopener">📍 Map</a></div>
@@ -424,7 +431,7 @@ function tipsView() {
           .filter((d) => d.stay)
           .map(
             (d) =>
-              `<li><a href="#plan/${d.date}"><strong>${fmtDay(d.date, { weekday: 'short', day: 'numeric', month: 'short' })}</strong></a> · ${esc(d.stay!.name)} ${d.stay!.booked ? '<span class="badge badge-booked">booked</span>' : '<span class="badge badge-guess">to book</span>'}</li>`,
+              `<li><a href="#plan/${d.date}"><strong>${fmtDay(d.date, { weekday: 'short', day: 'numeric', month: 'short' })}</strong></a> · ${esc(d.stay!.name)}${d.stay!.checkIn ? ` <span class="muted small">(in ${esc(d.stay!.checkIn)} · out ${esc(d.stay!.checkOut ?? '')})</span>` : ''} ${d.stay!.booked ? '<span class="badge badge-booked">booked</span>' : '<span class="badge badge-guess">to book</span>'}</li>`,
           )
           .join('')}</ul>
       </section>

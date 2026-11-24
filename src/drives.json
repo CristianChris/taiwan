@@ -76,39 +76,20 @@
     ]
   },
   {
-    "id": "guguan-goya",
-    "day": "2026-11-28",
-    "label": "Guguan → Goya Spring Resort",
-    "from": [
-      24.2033,
-      121.0092
-    ],
-    "to": [
-      24.1613,
-      120.9577
-    ],
-    "roads": "Hwy 8 back west",
-    "km": 10,
-    "time": "≈20 min",
-    "versions": [
-      "v2"
-    ]
-  },
-  {
-    "id": "goya-chiayi",
+    "id": "guguan-chiayi",
     "day": "2026-11-29",
-    "label": "Goya → Chiayi City",
+    "label": "Guguan → Chiayi City",
     "from": [
-      24.1613,
-      120.9577
+      24.2031684,
+      121.0044866
     ],
     "to": [
       23.479,
       120.4495
     ],
     "roads": "Hwy 8 → Freeway 4 → Freeway 3 or 1 south",
-    "km": 150,
-    "time": "≈2h10",
+    "km": 155,
+    "time": "≈2h20",
     "versions": [
       "v2"
     ]

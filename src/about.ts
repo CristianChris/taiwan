@@ -52,6 +52,14 @@ export const about: Record<string, About> = {
     about:
       'A hot-spring village at about 750 m in the Dajia River valley in Taichung’s mountains, known since the Japanese era. The short main street has the Mingzhi Hot Spring Hotel, a hot-spring park and a suspension bridge over the river.',
   },
+  'Dragon Valley Hotel': {
+    name: 'Dragon Valley Hotel & Paradise (龍谷大飯店)',
+    q: 'Dragon Valley Hotel Guguan',
+    rating: 3.7,
+    reviews: 2240,
+    about:
+      'A large, long-running hot-spring hotel right on the Guguan hot-spring street, with indoor and outdoor hot-spring pools and a small leisure park. Check-in 15:00, check-out 11:00.',
+  },
   'Goya Spring Resort': {
     name: 'Goya Spring Resort (谷野會館)',
     rating: 3.9,
