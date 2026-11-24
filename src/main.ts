@@ -3,6 +3,7 @@ import './style.css';
 import L from 'leaflet';
 import { about, RATINGS_CHECKED } from './about';
 import { DRONE, DRONE_LABEL, DRONE_CHECKED } from './drone';
+import { PARKING, PARKING_CHECKED } from './parking';
 import { trip, flights, places, tips, type Leg, type Stop, type Stay, type Day, type Mode } from './trip';
 import { versions } from './versions';
 import drivesData from './drives.json';
@@ -202,6 +203,20 @@ function droneHtml(map?: string, long = false) {
   return `<div class="drone is-${d.status}"><strong>${DRONE_LABEL[d.status]}</strong>${long ? ` — ${esc(d.note)}` : ''}</div>`;
 }
 
+function parkNav(at: L.LatLngTuple) {
+  return `https://www.google.com/maps/dir/?api=1&destination=${at[0]},${at[1]}`;
+}
+
+function parkingHtml(map?: string, long = false) {
+  const p = map ? PARKING[map] : undefined;
+  if (!p) return '';
+  if (!long)
+    return `<div class="parking"><span class="p-icon">P</span><span>${esc(p.name)} · ${esc(p.price)}</span></div>`;
+  return `<div class="parking is-long"><span class="p-icon">P</span><div><strong>${esc(p.name)}</strong>
+    <div>💰 ${esc(p.price)}</div><div>💳 ${esc(p.pay)}</div>${p.note ? `<div class="muted">${esc(p.note)}</div>` : ''}
+    <a class="btn" href="${parkNav(p.at)}" target="_blank" rel="noopener">🚗 Navigate to parking ↗</a></div></div>`;
+}
+
 function stayHtml(st: Stay) {
   const badge = st.booked ? '<span class="badge badge-booked">booked</span>' : '<span class="badge badge-guess">to book</span>';
   return `
@@ -231,6 +246,7 @@ function stopHtml(s: Stop, i: number, now: boolean, num: number | null = null, c
         <h3>${esc(s.title)} ${badges}</h3>
         ${ratingHtml(s.map)}
         ${droneHtml(s.map)}
+        ${parkingHtml(s.map)}
         <p>${esc(s.details)}</p>
         ${s.tips?.length ? `<ul class="stop-tips">${s.tips.map((t) => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}
         <div class="stop-actions">
@@ -262,6 +278,7 @@ function aboutView(date: string, i: number) {
       ${a?.rating ? `<div class="about-note">Google rating checked ${RATINGS_CHECKED}. Tap it to read the reviews.</div>` : ''}
       ${a ? `<h3>About</h3><p>${esc(a.about)}</p>` : ''}
       ${DRONE[s.map ?? ''] ? `<h3>Drone</h3>${droneHtml(s.map, true)}<div class="about-note">Checked ${DRONE_CHECKED}. Always check the CAA drone map on the day — see Tips → Drone rules.</div>` : ''}
+      ${PARKING[s.map ?? ''] ? `<h3>Parking</h3>${parkingHtml(s.map, true)}<div class="about-note">Car park found ${PARKING_CHECKED}. Prices marked “about” are typical rates: check the sign at the gate. See Tips → Parking.</div>` : ''}
       <h3>In your plan</h3>
       <p>${esc(s.details)}</p>
       ${s.getThere ? `<h3>Getting there</h3>${legHtml(s.getThere)}` : ''}
@@ -506,6 +523,28 @@ function initMap(id = 'map', only = mapDay) {
       })
         .addTo(m)
         .bindPopup(p.labels.join('<hr>'));
+    });
+    // a blue "P" where to leave the car, one per car park per day
+    const parks = new Map<string, { at: L.LatLngTuple; name: string; price: string; pay: string; for: string[] }>();
+    d.stops.forEach((s, si) => {
+      const p = s.map ? PARKING[s.map] : undefined;
+      if (!p) return;
+      const key = p.at.join(',');
+      const e = parks.get(key) ?? { at: p.at, name: p.name, price: p.price, pay: p.pay, for: [] };
+      e.for.push(`${nums[si] ?? ''}. ${s.title}`);
+      parks.set(key, e);
+    });
+    parks.forEach((p) => {
+      if (only === 'all') return; // keep the big map clean: parking shows on each day's map
+      L.marker(p.at, {
+        icon: L.divIcon({ className: 'park-pin', html: '<span>P</span>', iconSize: [0, 0] }),
+        zIndexOffset: -500,
+      })
+        .addTo(m)
+        .bindPopup(
+          `<strong>🅿️ ${esc(p.name)}</strong><br>For: ${p.for.map(esc).join(', ')}<br>💰 ${esc(p.price)}<br>💳 ${esc(p.pay)}<br><a href="${parkNav(p.at)}" target="_blank" rel="noopener">Navigate to parking ↗</a>`,
+        );
+      bounds.push(p.at);
     });
     if (path.length > 1) L.polyline(path, { color, weight: 3, opacity: 0.8, dashArray: '6 6' }).addTo(m);
   });

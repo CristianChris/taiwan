@@ -577,6 +577,18 @@ export const places: Place[] = [
 
 export const tips: Tip[] = [
   {
+    title: 'Parking and how to pay (🅿️ on each day’s map)',
+    icon: '🅿️',
+    points: [
+      'Each driving stop shows a blue P on the day map and on the stop card: tap it for the price, how to pay and a Navigate link. Prices marked “about” are typical rates, not checked for that car park, so read the sign at the gate.',
+      'Typical rates: city car parks in Taichung and Chiayi about NT$30–40 per hour; Taipei about NT$40–60 per hour; scenic-spot lots often a flat NT$50–100 per entry; hotels are usually free for guests.',
+      'Car parks with a barrier: take a ticket (or the camera reads your plate), then pay at the machine before you drive out. Machines take NT$100 notes and coins, and most take EasyCard or iPASS. Get an EasyCard at a 7-Eleven at the airport and top it up there.',
+      'Small lots at temples and viewpoints: pay the attendant in cash. Keep NT$100 notes handy.',
+      'Street parking (white or yellow-edge bays): an attendant puts a slip on the windscreen. Pay it at any 7-Eleven, FamilyMart or Hi-Life counter within a few days. If you miss one, the bill goes to IWS and they charge you.',
+      'Never park on red lines; yellow lines are drop-off only.',
+    ],
+  },
+  {
     title: 'Drone rules (🛸 spots marked on the plan)',
     icon: '🛸',
     points: [
