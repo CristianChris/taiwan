@@ -71,15 +71,6 @@ export const daysV2: Day[] = [
         getThere: { mode: 'car', how: 'Freeway 1 / Freeway 3 south → Sanyi exit → Miaoli 49', duration: '≈1h20 (≈100 km)', from: IWS, to: '勝興車站' },
       },
       {
-        time: '10:15',
-        title: 'Old Mountain Line Rail Bike',
-        details:
-          'Pedal a rail bike along the old tracks, through tunnels and over viaducts (Shengxing ↔ Longteng). Popular — book a time slot online a few days ahead.',
-        map: '舊山線鐵道自行車',
-        at: [24.3882, 120.782],
-        optional: true,
-      },
-      {
         time: '11:15',
         title: 'Longteng Broken Bridge (龍騰斷橋)',
         details:
@@ -107,9 +98,9 @@ export const daysV2: Day[] = [
       },
       {
         time: '14:45',
-        title: 'Shenji New Village (審計新村) or National Taichung Theater',
+        title: 'Shenji New Village (審計新村)',
         details:
-          'Pick one if you still have energy: Shenji New Village (old staff houses turned into cafés and design shops) or Toyo Ito’s cave-like opera house. Leave Taichung by 15:30.',
+          'If you still have energy: a lane of old staff houses turned into cafés, design shops and weekend market stalls. Leave Taichung by 15:30.',
         map: '審計新村',
         at: [24.1446, 120.6628],
         optional: true,

@@ -594,7 +594,7 @@ export const tips: Tip[] = [
     points: [
       'Check visa rules for your passport (many passports, incl. Singapore, are visa-free for short stays).',
       'Fill in the Taiwan online arrival card a few days before.',
-      'Booked: IWS car (28 Nov), Goya Spring Resort (28 Nov), 嵩茂渡假中心 (29 Nov), Ali-Shan Dengshan Hotel (30 Nov), Zhushan sunrise train (1 Dec). Still to book: a hotel in Ita Thao, Sun Moon Lake (1 Dec), and the Old Mountain Line rail bike if you want it.',
+      'Booked: IWS car (28 Nov), Goya Spring Resort (28 Nov), 嵩茂渡假中心 (29 Nov), Ali-Shan Dengshan Hotel (30 Nov), Zhushan sunrise train (1 Dec). Still to book: a hotel in Ita Thao, Sun Moon Lake (1 Dec).',
       'Rental car: IWS Car Rental, No. 309 Zhongzheng E. Rd., Dayuan. Free pick-up at Terminal 1 Exit 18 (call 03-3862555 or 0800-033414; office 08:00–20:00 — a 07:00–08:00 pick-up must be reserved in advance). Return at Taipei Main Station on 2 Dec (confirm the exact drop-off point and time with IWS). Get an International Driving Permit before you fly, and if you use the e-Gate at immigration, get an entry stamp at the counter — IWS needs it.',
       'Download offline Google Maps for Taipei.',
     ],
