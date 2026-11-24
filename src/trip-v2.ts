@@ -1,314 +1,493 @@
 /*
- * THE PLAN — rental car from Taoyuan Airport on arrival, Taichung sights on the
- * way to Chiayi, Taipei sightseeing on the last day.
- * Days 3 and 4 reuse the stops of days 3 and 4 in trip.ts.
- * Same conventions as trip.ts (≈ = estimate, guess, optional, at = map pin).
+ * THE PLAN (rewritten 24 Nov 2026 from Cristian's own outline).
+ * Car from IWS (near Taoyuan Airport) → Old Mountain Line → Taichung → Guguan hot springs →
+ * Chiayi → Shizhuo tea trails → Fenqihu → Alishan → Zhushan sunrise → Sun Moon Lake (Ita Thao) → Taipei → TPE.
+ * Same conventions as trip.ts (≈ = estimate, guess, optional, booked, at = map pin).
  */
-import { days as plan1, type Day, type Stay } from './trip';
+import type { Day, Stay } from './trip';
 
 const DENGSHAN: Stay = {
   name: 'Ali-Shan Dengshan Hotel (阿里山登山大飯店)',
   map: 'Ali-Shan Dengshan Hotel',
   at: [23.5116, 120.8033],
   address: 'East 47, Alishan National Forest Recreation Area, Alishan Township, Chiayi County',
-  note: 'In Alishan village, a short walk from Alishan station and the sunrise-train platform.',
+  note: 'In Alishan village, a short walk from Alishan station, where the sunrise train leaves.',
   booked: true,
 };
 
-const p1day2 = plan1[1];
+const IWS = '桃園市大園區中正東路309號';
+const ALISHAN = [23.5103, 120.804] as [number, number];
 
 export const daysV2: Day[] = [
+  // ── Day 1 ──
   {
     date: '2026-11-28',
-    title: 'Car from the airport → Taichung → Chiayi',
-    area: 'Taoyuan Airport · Taichung · Chiayi',
+    title: 'Old Mountain Line → Taichung → Guguan hot springs',
+    area: 'Taoyuan · Sanyi (Old Mountain Line) · Taichung · Guguan',
     summary:
-      "Pick up the rental car right after landing and drive south. Coffee stop at the famous Qingshui service area, then Taichung's highlights: Rainbow Village, Miyahara, the Second Market and the National Taichung Theater. Drive on to Chiayi for dinner at Wenhua Road Night Market.",
+      'Pick up the car at 07:30 and drive south to the Old Mountain Line: Shengxing station and the Longteng broken bridge. Then a taste of Taichung (Miyahara, the Second Market, Taichung Park) and up into the mountains to the Guguan hot-spring street. Check in at Goya Spring Resort around 18:00 and soak in the onsen.',
     heads_up:
-      "You land after a red-eye — don't drive tired. Sleep on the plane if you can, take a proper break at Qingshui service area, and swap drivers if you both have an International Driving Permit. Night 1 in Chiayi.",
+      'Long first day after a red-eye: ≈4 h of driving in total. Sleep on the plane, swap drivers if you both have an IDP, and keep Taichung short if you are tired. Sunset is ≈17:10, so the last mountain drive is in the dusk — take it slowly.',
     stops: [
       {
         time: '≈05:40',
-        title: 'Land at Taoyuan Airport (TPE)',
-        details: 'Immigration, tourist SIM / eSIM, withdraw cash (NT$) at an airport ATM.',
+        title: 'Land at Taoyuan Airport, Terminal 1',
+        details:
+          'Immigration, collect bags, tourist SIM / eSIM and NT$ cash from an ATM. Toilets, SIM and anything else before you call the car company (step 4).',
         map: 'Taoyuan International Airport',
         at: [25.0797, 121.2342],
-        tips: ['Fill in the online arrival card before you fly.'],
+        tips: [
+          'Using the e-Gate? Then go to the Immigration counter afterwards for an entry STAMP in your passport — IWS cannot rent you the car without it.',
+          'Fill in the online arrival card before you fly.',
+        ],
       },
       {
-        time: '≈07:00',
-        title: 'Pick up the rental car near the airport',
+        time: '07:30',
+        title: 'Pick up the car: IWS Car Rental',
         details:
-          'Free airport pick-up: call 03-3862555 when you land and they collect you from the terminal. Car office: No. 309, Zhongzheng E. Rd., Dayuan Dist., Taoyuan City (≈10 min from the terminal). Bring IDP + home licence + passport + credit card.',
-        map: '桃園市大園區中正東路309號',
+          'Free pick-up at Terminal 1. Step 1: collect your bags (no need to call unless the flight is delayed). Step 2: after customs turn right through the waiting area — the Tourist Service Center is on your left (ask them for Exit 18). Step 3: go to the "Pick up area" and find Exit 18. Step 4: wait under the 18 sign and call IWS: 03-3862555 or 0800-033414. Their car can’t stop long, so stay right under the sign. Office: No. 309 Zhongzheng E. Rd., Dayuan (≈10 min).',
+        map: IWS,
         at: [25.0614, 121.2052],
-        tips: ['Call 03-3862555 after immigration (+886 3 386 2555 from a foreign SIM).', 'Ask whether you can return the car in Taipei on 2 Dec, and the fee.'],
-        getThere: { mode: 'car', how: 'Free pick-up shuttle from the terminal', duration: '≈10 min' },
+        booked: true,
+        tips: [
+          'IWS opens at 08:00. A pick-up between 07:00 and 08:00 only works if it was reserved when you booked — check your booking, or plan for 08:00.',
+          'From a foreign SIM: +886 3 386 2555. Text help (08:30–17:30): LINE @560lxvmi or WhatsApp +886 966 166 071 — they can’t take calls on those.',
+          'Bring passport (with entry stamp), International Driving Permit, home licence and credit card. Photograph the car before you leave.',
+        ],
+        getThere: { mode: 'car', how: 'IWS shuttle from Exit 18', duration: '≈10 min' },
       },
       {
-        time: '≈08:30',
-        title: 'Breakfast & coffee: Qingshui Service Area',
-        details: "Taiwan's most famous freeway rest stop (清水服務區) — big food court, local snacks, sea views. Rest here before Taichung.",
-        map: '清水服務區',
-        at: [24.2785, 120.602],
-        getThere: {
-          mode: 'car',
-          how: 'Freeway 2 → Freeway 3 south',
-          duration: '≈1h20',
-          from: '桃園市大園區中正東路309號',
-          to: '清水服務區',
-        },
+        time: '09:30',
+        title: 'Shengxing Station (勝興車站)',
+        details:
+          "The highest station on Taiwan's old western mountain line (1903–1998), a wooden Japanese-era station with the old tunnel and tracks you can walk along, plus a little old street with Hakka snacks (lei cha, mochi). 45–60 min.",
+        map: '勝興車站',
+        at: [24.3881, 120.782],
+        getThere: { mode: 'car', how: 'Freeway 1 / Freeway 3 south → Sanyi exit → Miaoli 49', duration: '≈1h20 (≈100 km)', from: IWS, to: '勝興車站' },
       },
       {
-        time: '10:00',
-        title: 'Rainbow Village (彩虹眷村)',
-        details: 'Tiny veterans’ village covered in colourful paintings by "Rainbow Grandpa". 30–45 min.',
-        map: 'Rainbow Village Taichung',
-        at: [24.1338, 120.61],
-        getThere: { mode: 'car', how: 'Freeway 3 south → Taichung (Nantun)', duration: '≈30 min', from: '清水服務區', to: 'Rainbow Village Taichung' },
+        time: '10:15',
+        title: 'Old Mountain Line Rail Bike',
+        details:
+          'Pedal a rail bike along the old tracks, through tunnels and over viaducts (Shengxing ↔ Longteng). Popular — book a time slot online a few days ahead.',
+        map: '舊山線鐵道自行車',
+        at: [24.3882, 120.782],
+        optional: true,
       },
       {
         time: '11:15',
-        title: 'Miyahara (宮原眼科)',
-        details: 'Famous ice cream and pineapple cakes inside a 1920s eye hospital. Park nearby and walk.',
-        map: '宮原眼科',
-        at: [24.1375, 120.6838],
-        getThere: { mode: 'car', how: 'Drive into central Taichung', duration: '≈25 min', from: 'Rainbow Village Taichung', to: '宮原眼科' },
+        title: 'Longteng Broken Bridge (龍騰斷橋)',
+        details:
+          'The red-brick piers of the 1907 Yutengping railway bridge, broken by the 1935 earthquake — the most photographed sight on the line. 30–45 min.',
+        map: '龍騰斷橋',
+        at: [24.3585, 120.774],
+        getThere: { mode: 'car', how: 'Miaoli 49 / 130 south', duration: '≈15 min', from: '勝興車站', to: '龍騰斷橋' },
       },
       {
-        time: '12:15',
+        time: '12:45',
         title: 'Lunch: Taichung Second Market (第二市場)',
-        details: 'Historic market hall with old-school stalls: braised pork rice, radish cake, beef soup. 10 min walk from Miyahara.',
+        details: 'Historic market hall with old-school stalls: braised pork rice, radish cake, beef soup. Park nearby.',
         map: '台中第二市場',
-        at: [24.1418, 120.6805],
-        getThere: { mode: 'walk', how: 'Walk north-west', duration: '≈10 min' },
+        at: [24.1424, 120.6788],
+        getThere: { mode: 'car', how: 'Freeway 1 south → Taichung', duration: '≈50 min', from: '龍騰斷橋', to: '台中第二市場' },
       },
       {
         time: '13:45',
-        title: 'National Taichung Theater',
-        details: "Toyo Ito's cave-like opera house — free to walk in; rooftop garden with city views.",
-        map: 'National Taichung Theater',
-        at: [24.1627, 120.6402],
-        getThere: { mode: 'car', how: 'Drive to Xitun district', duration: '≈20 min', from: '台中第二市場', to: 'National Taichung Theater' },
+        title: 'Miyahara & Taichung Park',
+        details:
+          'Ice cream and pineapple cakes in a 1927 eye clinic (5 min walk from the market), then the lake pavilion in Taichung Park next door.',
+        map: '宮原眼科',
+        at: [24.1378, 120.6836],
+        getThere: { mode: 'walk', how: 'Walk from the market', duration: '≈10 min' },
       },
       {
-        time: '15:00',
-        title: 'Drive to Chiayi, check in',
-        details: 'Hotel near Chiayi station or Wenhua Road (with parking). Rest before dinner.',
-        map: 'Chiayi Station',
-        at: [23.4793, 120.4413],
-        guess: true,
-        getThere: { mode: 'car', how: 'Freeway 1 or Freeway 3 south to Chiayi', duration: '≈1h20', from: 'National Taichung Theater', to: 'Chiayi Station' },
+        time: '14:45',
+        title: 'Shenji New Village (審計新村) or National Taichung Theater',
+        details:
+          'Pick one if you still have energy: Shenji New Village (old staff houses turned into cafés and design shops) or Toyo Ito’s cave-like opera house. Leave Taichung by 15:30.',
+        map: '審計新村',
+        at: [24.1446, 120.6628],
+        optional: true,
+      },
+      {
+        time: '17:00',
+        title: 'Guguan hot-spring street (谷關溫泉 · Mingzhi area)',
+        details:
+          'A small hot-spring village in the Dajia River gorge: the old street, the suspension bridge, the hot-spring park and Mingzhi Hot Spring Hotel. A short walk before dark, then back down to the hotel.',
+        map: '谷關溫泉',
+        at: [24.2033, 121.0092],
+        getThere: { mode: 'car', how: 'Freeway 4 / Hwy 3 → Dongshi → Hwy 8 east', duration: '≈1h20 (≈60 km)', from: '審計新村', to: '谷關溫泉' },
       },
       {
         time: '18:00',
-        title: 'Night market: Wenhua Road Night Market (文化路夜市)',
-        details: "Chiayi's famous night market. Must-try: Chiayi turkey rice (火雞肉飯, e.g. 噴水雞肉飯 at the fountain roundabout), grilled corn, fresh fruit juice.",
+        title: 'Check in at Goya Spring Resort, onsen evening',
+        details: 'Dinner at or near the hotel, then the hot-spring baths. Early night.',
+        map: 'Goya Spring Resort',
+        at: [24.1613, 120.9577],
+        booked: true,
+        getThere: { mode: 'car', how: 'Hwy 8 back west (Dongguan Rd)', duration: '≈20 min', from: '谷關溫泉', to: 'Goya Spring Resort' },
+      },
+    ],
+    alternatives: [
+      'Too tired after the flight? Skip Taichung city: Old Mountain Line → straight to Guguan (≈1h40), check in by 15:30 and enjoy a long onsen afternoon.',
+      'Or skip the Old Mountain Line and do Taichung + Rainbow Village instead (Freeway 3 straight to Taichung ≈1h45).',
+    ],
+    stay: {
+      name: 'Goya Spring Resort (谷野會館)',
+      map: 'Goya Spring Resort',
+      at: [24.1613, 120.9577],
+      address: "36 Lileng Lane, Dongguan Rd Sec. 1, Bo'ai Village, Heping District, Taichung",
+      note: 'Hot-spring resort on the road up to Guguan. Use the onsen tonight and before breakfast.',
+      booked: true,
+    },
+  },
+  // ── Day 2 ──
+  {
+    date: '2026-11-29',
+    title: 'Chiayi City → Shizhuo tea trails & sunset',
+    area: 'Guguan → Chiayi City → Shizhuo / Leye tea country (≈1,300 m)',
+    summary:
+      "Drive south to Chiayi for turkey rice and the Japanese-era timber district (Hinoki Village, Beimen station of the Alishan railway). In the afternoon climb Highway 18 into the tea country around Shizhuo, check in at 嵩茂渡假中心 and walk the tea trails for a panoramic sunset over the tea terraces.",
+    heads_up: '≈3h30 of driving in total. Fill the tank in Chiayi — few petrol stations up in the mountains. Sunset ≈17:10; be on the trail by 16:30.',
+    stops: [
+      {
+        time: '07:30',
+        title: 'Morning onsen & breakfast',
+        details: 'Last soak in the hot springs, breakfast, check out by 09:30.',
+        map: 'Goya Spring Resort',
+        at: [24.1613, 120.9577],
+      },
+      {
+        time: '11:45',
+        title: 'Lunch: Chiayi turkey rice (火雞肉飯)',
+        details:
+          "Chiayi's signature dish — shredded turkey over rice with fried shallots. Try the famous shops around the central fountain roundabout and Wenhua Road (e.g. 噴水雞肉飯).",
         map: 'Wenhua Road Night Market Chiayi',
         at: [23.479, 120.4495],
-        getThere: { mode: 'walk', how: 'Walk from the hotel', duration: '≈10 min' },
+        getThere: { mode: 'car', how: 'Hwy 8 → Freeway 4 → Freeway 1 or 3 south → Chiayi', duration: '≈2h10 (≈150 km)', from: 'Goya Spring Resort', to: 'Chiayi Station' },
+      },
+      {
+        time: '12:45',
+        title: 'Hinoki Village (檜意森活村)',
+        details:
+          'A restored Japanese-era timber village of 28 cypress-wood houses — shops, cafés and small exhibitions about the Alishan logging days. Free to walk.',
+        map: '檜意森活村',
+        at: [23.4851, 120.4552],
+        getThere: { mode: 'car', how: 'Drive across town', duration: '≈10 min' },
+      },
+      {
+        time: '13:30',
+        title: 'Beimen Station (北門車站)',
+        details: 'The 1912 cypress-wood station of the Alishan Forest Railway, right next to Hinoki Village. Old trains on display.',
+        map: '阿里山森林鐵路北門車站',
+        at: [23.4881, 120.4542],
+        getThere: { mode: 'walk', how: 'Walk from Hinoki Village', duration: '≈5 min' },
+      },
+      {
+        time: '14:00',
+        title: 'Chiayi Art Museum or Sun-Shooting Tower',
+        details:
+          'Optional: the Chiayi Art Museum (a 1936 tobacco office turned into a bright gallery and café) or the Sun-Shooting Tower in Chiayi Park (lift to the top for city views). Leave Chiayi by 14:45.',
+        map: '嘉義市立美術館',
+        at: [23.4768, 120.4407],
+        optional: true,
+      },
+      {
+        time: '16:00',
+        title: 'Check in at 嵩茂渡假中心',
+        details: 'Up Highway 18 into the tea country. Drop the bags and head straight out to the tea trails.',
+        map: '嵩茂渡假中心',
+        at: [23.4711, 120.7064],
+        booked: true,
+        getThere: { mode: 'car', how: 'Hwy 159 → Hwy 18 (Alishan Hwy) east → Shizhuo', duration: '≈1h15 (≈50 km)', from: 'Chiayi Station', to: '嵩茂渡假中心' },
+      },
+      {
+        time: '16:30',
+        title: 'Shizhuo tea trails & sunset (霧之道 · 茶之道)',
+        details:
+          'A network of short trails right next to the hotel: the Mist Trail through cedar forest, and the Tea Trail between tea terraces with wide views over the mountains. Sunset ≈17:10 over the tea fields; clouds often roll in below you.',
+        map: '霧之道 石棹',
+        at: [23.474, 120.7027],
+        getThere: { mode: 'walk', how: 'Walk from the hotel', duration: '≈5–10 min' },
+      },
+      {
+        time: '18:00',
+        title: 'Dinner at the hotel or in Shizhuo',
+        details: 'Mountain vegetables, bamboo shoots and tea dishes. Shizhuo is tiny, so ask the hotel what is open.',
+        map: '嵩茂渡假中心',
+        at: [23.4711, 120.7064],
       },
     ],
     alternatives: [
-      'Too tired to drive after the flight? Take the HSR to Taichung instead and pick the car up at HSR Taichung.',
-      'Sunset fan: swap the theater for Gaomei Wetlands (≈40 min west of Taichung, sunset ≈17:15) — then reach Chiayi around 19:30.',
+      'Want the classic sea-of-clouds sunset? Eryanping Trail (二延平步道, 4.5★) is ≈25 min back down Hwy 18 — a 30 min climb to a famous sunset platform.',
+      'Running late from Chiayi? Skip the museum and go straight up after Beimen station.',
     ],
     stay: {
-      name: 'Hotel in Chiayi (to book)',
-      map: 'Chiayi Station',
-      note: 'Pick one near Chiayi station or Wenhua Road with parking, so you can walk to the night market.',
+      name: '嵩茂渡假中心 (Song Mao resort)',
+      map: '嵩茂渡假中心',
+      at: [23.4711, 120.7064],
+      address: 'Leye Village, Alishan Township, Chiayi County (Shizhuo area)',
+      note: 'In the tea country at ≈1,300 m, steps from the Mist Trail and the tea terraces. Saiji Tea House is next door.',
+      booked: true,
     },
   },
+  // ── Day 3 ──
   {
-    ...p1day2,
-    title: 'Chiayi → Fenqihu station → Alishan',
-    area: 'Chiayi → Fenqihu → Alishan (≈2,200 m)',
+    date: '2026-11-30',
+    title: 'Fenqihu → Saiji Tea House → Alishan must-sees',
+    area: 'Shizhuo → Fenqihu → Alishan Forest Recreation Area (≈2,200 m)',
     summary:
-      'Drive up into the mountains from Chiayi. Stop at Fenqihu, the most charming station on the Alishan Forest Railway (old street, famous railway bento, train garage), then on to Alishan for the giant-tree trails.',
+      'Morning in Fenqihu: the old street, the railway garage and two short forest trails. Lunch at Saiji Tea House on the way back past the hotel, then up to Alishan for the giant-tree trails, Sister Ponds and sunset at Zhaoping. Collect tomorrow’s sunrise-train ticket today.',
+    heads_up:
+      'Collect your sunrise-train ticket today (Alishan station counter or a 7-Eleven ibon) — the train leaves before the ticket office opens. Early night: the alarm is ≈04:30.',
     stops: [
       {
-        time: '08:30',
-        title: 'Breakfast in Chiayi & fill up the tank',
-        details: 'Try a Chiayi breakfast (rice noodle soup, turkey rice) and fill up — few petrol stations on the mountain.',
-        map: 'Chiayi Station',
-        at: [23.4793, 120.4413],
+        time: '09:00',
+        title: 'Fenqihu Old Street & railway station (奮起湖)',
+        details:
+          'Mountain village halfway up the Alishan Forest Railway: old street, the steam-locomotive garage, the famous railway bento (奮起湖便當) and square doughnuts. Park in the paid car park above the village.',
+        map: 'Fenqihu Station',
+        at: [23.5053, 120.6951],
+        getThere: { mode: 'car', how: 'County Rd 169 to Fenqihu', duration: '≈25 min', from: '嵩茂渡假中心', to: 'Fenqihu Station' },
       },
-      ...p1day2.stops.slice(2).map((s, i) =>
-        i === 0
-          ? {
-              ...s,
-              getThere: {
-                mode: 'car' as const,
-                how: 'Hwy 18 (Alishan Hwy) → County Rd 159甲 → 169 to Fenqihu',
-                duration: '≈1h20',
-                from: 'Chiayi Station',
-                to: 'Fenqihu Station',
-              },
-            }
-          : s,
-      ),
-    ],
-    stay: {
-      name: 'Hotel in Alishan (to book)',
-      map: 'Alishan Forest Recreation Area',
-      note: 'First night in Alishan. Easiest is to stay at Ali-Shan Dengshan Hotel both nights, so you don’t move bags — ask them about 29 Nov.',
-    },
-  },
-  {
-    ...plan1[2],
-    title: 'Alishan forest trains & Tataka',
-    summary:
-      'A slow morning in the forest: a ride on the little Shenmu line train and the giant cypress trees, then a scenic afternoon drive to Tataka on the edge of Yushan (Jade Mountain) National Park. Second night in Alishan — the sunrise train is tomorrow morning.',
-    heads_up: 'Early night: tomorrow’s sunrise train leaves before dawn. Buy breakfast snacks at the 7-Eleven in the village tonight.',
-    stops: [
       {
-        time: '08:00',
-        title: 'Breakfast & morning walk',
-        details: 'Hotel breakfast, then an easy walk around the village and Zhaoping park while the morning mist lifts.',
+        time: '10:00',
+        title: 'Fenqihu trails: Cedar Boardwalk & Gaozaikan old trail',
+        details:
+          'Cedar Boardwalk Trail (4.6★): an easy loop through tall Japanese cedar right behind the old street. Add the old Gaozaikan trail (糕仔崁古道), a stone path through bamboo and cedar, if you want more. ≈1–1.5 h in total.',
+        map: '奮起湖 杉林步道',
+        at: [23.5035, 120.6933],
+        getThere: { mode: 'walk', how: 'From the old street', duration: '≈5 min' },
+      },
+      {
+        time: '12:15',
+        title: 'Lunch: Saiji Tea House',
+        details:
+          'Tea house with tea-farm views next to your Day 2 hotel (4.3★). Tea meals and a pot of Alishan high-mountain oolong. If it is closed or busy, eat the railway bento in Fenqihu instead.',
+        map: 'Saiji Tea House',
+        at: [23.4715, 120.705],
+        optional: true,
+        getThere: { mode: 'car', how: 'County Rd 169 back to Shizhuo', duration: '≈25 min', from: 'Fenqihu Station', to: 'Saiji Tea House' },
+      },
+      {
+        time: '14:00',
+        title: 'Alishan: check in, collect the sunrise-train ticket',
+        details:
+          'Pay at the forest recreation area gate, drop the bags at Dengshan, and collect tomorrow’s sunrise ticket at the Alishan station counter (passport + reservation number from your confirmation).',
         map: 'Alishan Station',
-        at: [23.5103, 120.804],
+        at: ALISHAN,
+        getThere: { mode: 'car', how: 'Hwy 18 east to the Alishan gate', duration: '≈40 min', from: 'Saiji Tea House', to: 'Alishan Forest Recreation Area' },
       },
-      ...plan1[2].stops.slice(2),
+      {
+        time: '14:45',
+        title: 'Giant Tree Cluster Trail & Shouzhen Temple',
+        details:
+          'The must-see boardwalk loop past 1,000–2,000-year-old red cypress trees (4.8★), starting near Shouzhen Temple. Allow 1–1.5 h.',
+        map: '阿里山 巨木群棧道',
+        at: [23.5167, 120.8096],
+      },
+      {
+        time: '15:45',
+        title: 'Sister Ponds (姊妹潭)',
+        details: 'Two small ponds in the cypress forest at the end of the giant-trees loop.',
+        map: 'Alishan Sister Ponds',
+        at: [23.5165, 120.8076],
+        getThere: { mode: 'walk', how: 'Giant-trees loop trail', duration: '≈20 min' },
+      },
+      {
+        time: '16:40',
+        title: 'Sunset at Zhaoping station',
+        details: 'Short walk up to Zhaoping park and station for the sunset (≈17:05), then dinner in Alishan village.',
+        map: 'Zhaoping Station Alishan',
+        at: [23.5126, 120.8053],
+        getThere: { mode: 'walk', how: 'Walk up from the ponds', duration: '≈15 min' },
+      },
+      {
+        time: '18:00',
+        title: 'Dinner in Alishan village & early night',
+        details: 'Hot pot or mountain vegetables at the village food court; buy breakfast snacks at the 7-Eleven for the early train.',
+        map: 'Alishan Station',
+        at: ALISHAN,
+      },
     ],
     alternatives: [
-      'Instead of Tataka: drive down to Shizhuo (石桌) tea plantations (≈30 min) for tea fields above the clouds and a tea tasting.',
+      'Short on time? Skip the Gaozaikan trail and the tea house: lunch in Fenqihu and reach Alishan by 13:30.',
+      'Want a train ride today? Take the Shenmu line (≈10 min) from Alishan station to the giant trees instead of walking.',
     ],
     stay: DENGSHAN,
   },
+  // ── Day 4 ──
   {
-    ...plan1[3],
-    title: 'Alishan sunrise → mountain drive to Sun Moon Lake',
-    area: 'Zhushan sunrise · Alishan → Ruili → Sun Moon Lake',
+    date: '2026-12-01',
+    title: 'Zhushan sunrise → nap → Sun Moon Lake (Ita Thao)',
+    area: 'Zhushan · Alishan → Sun Moon Lake (Ita Thao)',
     summary:
-      "Sunrise train to Zhushan (booked) for the sea of clouds, breakfast back in the village, then the mountain drive through the tea and bamboo country of Ruili to Sun Moon Lake. Afternoon lake cruise and temples, evening at Ita Thao's lakeside night street.",
+      'Sunrise train to Zhushan (booked), walk back down the forest trail, then a nap before the 11:00 check-out. Drive to Sun Moon Lake, check in at Ita Thao, ride the ropeway (it is closed tomorrow), watch the sunset at the pier and eat at the Ita Thao night street.',
     heads_up:
-      'Very early start (≈04:30) and near-freezing at sunrise — wear all your layers. Then ≈3 h of mountain driving (≈113 km): leave by 09:30 and take breaks. Roads can close after landslides/heavy rain; check road status (1968 app) before leaving. Overnight at Sun Moon Lake.',
+      'Alarm ≈04:30 and near-freezing at sunrise — all your layers. The ropeway closes on the first Wednesday of the month, which is tomorrow, so ride it today (last tickets 15:30 on weekdays). ≈3 h mountain drive: check road status (1968 app) before leaving.',
     stops: [
       {
         time: '≈05:00',
-        title: 'Sunrise train to Zhushan',
+        title: 'Sunrise train to Zhushan (祝山)',
         details:
-          'Your Alishan Forest Railway sunrise ticket is booked. Board the Zhushan line at Alishan station (≈25 min ride) to the viewing deck. Sunrise ≈06:25; sea of clouds and Jade Mountain on clear mornings.',
+          'Booked: one-way Zhushan line from Alishan station (≈25 min) — reservation number on your confirmation. The departure time is set by the sunrise and posted the day before; be at the station ≈20 min early. Sunrise ≈06:25 over the sea of clouds and Jade Mountain.',
         map: 'Zhushan Sunrise Viewing Platform',
         at: [23.5088, 120.8174],
         booked: true,
         tips: [
-          'The exact departure time depends on the sunrise and is announced the day before — check your e-ticket and the board at Alishan station on 30 Nov.',
-          'Have the e-ticket / QR code ready on your phone, and be at the station ≈20 min early.',
+          'Collect the ticket by the day before (Alishan station counter or 7-Eleven ibon, NT$10) — no refund if you miss the train because the ticket wasn’t collected.',
+          'Bring the passport you booked with. Stations: Alishan +886 5 267 9200.',
         ],
         getThere: { mode: 'train', how: 'Zhushan line from Alishan station (walk ≈10 min from the hotel)', duration: '≈25 min' },
       },
       {
-        time: '07:15',
-        title: 'Walk down & breakfast, check out',
-        details: 'Take the ≈1 h trail back down via Duigaoyue (or the train back), then hotel breakfast and check out.',
+        time: '06:50',
+        title: 'Walk down: Zhushan trail & Duigaoyue',
+        details:
+          'Your ticket is one way, so walk back: the trail from Zhushan down to Alishan village (≈1 h) passes Zhaoping and the Ciyun Temple; add the Duigaoyue (對高岳) viewpoint detour (+30 min) if you still have legs.',
         map: 'Alishan Station',
-        at: [23.5103, 120.804],
-        getThere: { mode: 'walk', how: 'Zhushan → Alishan trail (downhill), or the train back', duration: '≈1 h' },
-      },
-      { ...plan1[3].stops[0], time: '09:30', title: 'Drive to Sun Moon Lake' },
-      { ...plan1[3].stops[1], time: '13:00' },
-      { ...plan1[3].stops[2], time: '14:30' },
-      { ...plan1[3].stops[3], time: '15:45' },
-      ...plan1[3].stops.slice(4),
-    ],
-    alternatives: [
-      'Cloudy or rainy morning? Sunrise trains still run, but you may only see mist — the giant trees on the walk down are beautiful in fog too.',
-      ...(plan1[3].alternatives ?? []),
-    ],
-    stay: {
-      name: 'Hotel at Sun Moon Lake (to book)',
-      map: 'Shuishe Pier',
-      note: 'Shuishe village is the easiest base: restaurants, the main pier, bike rental and the sunrise boardwalk.',
-    },
-  },
-  {
-    date: '2026-12-02',
-    title: 'Drive to Taipei, old town, Shilin & fly home',
-    area: 'Sun Moon Lake → Taipei (Wanhua · Dadaocheng · Shilin) → Taoyuan Airport',
-    summary:
-      "Early drive north to Taipei and return the car, then Taipei's old town by MRT: Longshan Temple, Bopiliao, Ximending, Dihua Street and the Dadaocheng sunset, with a last dinner at Shilin Night Market before the airport.",
-    heads_up:
-      'Long day with a 23:20 flight. Leave the lake by 07:30. Keep luggage in Taipei Main Station lockers after returning the car, and be on the Airport MRT by ≈19:40.',
-    stops: [
-      {
-        time: '06:45',
-        title: 'Sunrise walk by the lake',
-        details: 'Short walk on the Shuishe lakeside boardwalk in the morning mist, then check out.',
-        map: 'Shuishe Pier',
-        at: [23.8662, 120.91],
-        optional: true,
+        at: ALISHAN,
+        getThere: { mode: 'walk', how: 'Zhushan → Alishan trail (downhill)', duration: '≈1–1.5 h' },
       },
       {
-        time: '07:30',
-        title: 'Drive to Taipei',
-        details: 'Freeways all the way. Refuel near Taipei before returning the car.',
-        map: 'Taipei Main Station',
-        at: [25.0478, 121.517],
-        getThere: {
-          mode: 'car',
-          how: 'Hwy 21 → Freeway 6 → Freeway 3 north → Taipei',
-          duration: '≈2h45–3h',
-          from: 'Shuishe Visitor Center',
-          to: 'Taipei Main Station',
-        },
-      },
-      {
-        time: '≈10:30',
-        title: 'Return the car & store luggage',
-        details: 'Return the car in Taipei if the rental company allows it (ask when you pick it up), then put bags in the Taipei Main Station lockers. If not, see the swap-in idea below about returning at the airport.',
-        map: 'Taipei Main Station',
-        at: [25.0478, 121.517],
-        guess: true,
+        time: '08:30',
+        title: 'Breakfast & nap at the hotel',
+        details: 'Hotel breakfast, then sleep until check-out at 11:00.',
+        map: 'Ali-Shan Dengshan Hotel',
+        at: [23.5116, 120.8033],
       },
       {
         time: '11:00',
-        title: 'Longshan Temple & Bopiliao',
-        details: "Taipei's most famous temple (1738) and the Qing-era red-brick street right behind it.",
-        map: 'Longshan Temple Taipei',
-        at: [25.0372, 121.4999],
-        getThere: { mode: 'mrt', how: 'Blue line Taipei Main → Longshan Temple', duration: '≈10 min', from: 'Taipei Main Station', to: 'Longshan Temple Taipei' },
+        title: 'Check out & drive to Sun Moon Lake',
+        details:
+          'Hwy 18 down to Shizhuo, county roads through the Ruili / Zhushan tea and bamboo country, then Hwy 16 / 21 up to the lake. Break in Zhushan town or a 7-Eleven on the way.',
+        map: 'Ita Thao Pier',
+        at: [23.8505, 120.9351],
+        getThere: {
+          mode: 'car',
+          how: 'Hwy 18 → 嘉155 / 149甲 / 149 (Ruili) → Hwy 3 (Zhushan) → Hwy 16 → Hwy 21',
+          duration: '≈3h (≈113 km)',
+          from: 'Alishan Forest Recreation Area',
+          to: 'Ita Thao Pier',
+        },
       },
       {
-        time: '12:15',
-        title: 'Lunch in Ximending',
-        details: 'Ay-Chung flour-rice noodles (阿宗麵線), braised pork rice, bubble tea.',
-        map: 'Ximending',
-        at: [25.0421, 121.5076],
-        getThere: { mode: 'mrt', how: 'Blue line 1 stop to Ximen (or walk 15 min)', duration: '≈5 min', from: 'Longshan Temple Station', to: 'Ximending' },
+        time: '14:15',
+        title: 'Check in at Ita Thao',
+        details: 'Not booked yet — see the hotel ideas in the "Tonight" card below. Most have parking.',
+        map: 'Ita Thao Night Market',
+        at: [23.8481, 120.9306],
+        guess: true,
       },
       {
-        time: '13:45',
-        title: 'Dadaocheng & Dihua Street',
-        details: "Taipei's best-preserved old town: 19th-century shophouses, dried goods and herbs, Xiahai City God Temple, old tea houses — good for souvenirs.",
+        time: '14:45',
+        title: 'Sun Moon Lake Ropeway',
+        details:
+          'Gondola from Ita Thao over the hills to the Formosan Aboriginal Culture Village, with big lake views. Weekday hours 10:30–16:00, last tickets 15:30. It is closed tomorrow (first Wednesday of the month).',
+        map: 'Sun Moon Lake Ropeway',
+        at: [23.8517, 120.9363],
+      },
+      {
+        time: '17:00',
+        title: 'Sunset at Ita Thao Pier',
+        details: 'Sunset ≈17:10 across the lake.',
+        map: 'Ita Thao Pier',
+        at: [23.8505, 120.9351],
+      },
+      {
+        time: '18:00',
+        title: 'Night market: Ita Thao Night Street',
+        details: 'Thao grilled boar sausage, millet mochi, sticky rice in bamboo, sweet-potato balls.',
+        map: 'Ita Thao Night Market',
+        at: [23.8481, 120.9306],
+      },
+    ],
+    alternatives: [
+      'Too sleepy to drive at 11:00? Skip the nap’s second half and drive with a long break in Zhushan town, or swap drivers halfway.',
+      'Prefer bigger roads? Hwy 18 back to Chiayi, then Freeway 3 → Freeway 6 to the lake (≈3h, easier, fewer curves).',
+    ],
+    stay: {
+      name: 'Hotel in Ita Thao (to book)',
+      map: 'Ita Thao Night Market',
+      at: [23.8481, 120.9306],
+      note:
+        'Ideas near the old street (Google ratings, 24 Nov): Wyndham Sun Moon Lake 4.5★ (2,755) — upscale with hot-spring baths; Ming Yue Hu Hotel 4.6★ (1,432) and 湖悦景觀旅店 4.4★ (1,027) — front-row lake views; 日月潭水漾 4.5★ (1,509); Zhen House 珍棧民宿 4.8★ (795) — small B&B. Ask for parking.',
+    },
+  },
+  // ── Day 5 ──
+  {
+    date: '2026-12-02',
+    title: 'Lake morning → Taipei → return the car → fly home',
+    area: 'Sun Moon Lake → Taipei (Dadaocheng) → Dayuan (IWS) → Taoyuan Airport',
+    summary:
+      'Boat across the lake in the morning (the ropeway is closed today), then drive to Taipei for a short old-town visit, return the car to IWS by 19:30 and take their shuttle to Terminal 1 for the 23:20 flight.',
+    heads_up:
+      'The car must be back at IWS before 20:00 (office hours 08:00–20:00) — aim for 19:30. Leave the lake by 12:00 at the latest. Freeway traffic into Taipei can add 30–60 min.',
+    stops: [
+      {
+        time: '08:00',
+        title: 'Breakfast & check out',
+        details: 'Leave the bags in the car.',
+        map: 'Ita Thao Pier',
+        at: [23.8505, 120.9351],
+      },
+      {
+        time: '09:00',
+        title: 'Lake boat: Ita Thao → Xuanguang Temple → Shuishe',
+        details:
+          'Hop-on boat pass (≈NT$300): Xuanguang Temple (Ah Po tea eggs) and Shuishe, then back to Ita Thao. ≈2 h with stops.',
+        map: 'Xuanguang Temple',
+        at: [23.8494, 120.9225],
+        getThere: { mode: 'boat', how: 'Hop-on boat between the three piers', duration: '≈10–15 min per hop', cost: '≈NT$300 pp' },
+      },
+      {
+        time: '11:00',
+        title: 'Wenwu Temple viewpoint',
+        details: 'Big temple on the north shore with a famous lake view from the top terrace (4.7★). On the drive out.',
+        map: '文武廟 日月潭',
+        at: [23.87, 120.9276],
+        optional: true,
+      },
+      {
+        time: '11:45',
+        title: 'Drive to Taipei',
+        details: 'Lunch at a freeway service area (Xihu or Qingshui). Refuel before returning the car.',
         map: 'Dihua Street',
         at: [25.0565, 121.51],
-        getThere: { mode: 'mrt', how: 'Green line Ximen → Beimen, exit 3', duration: '≈10 min', from: 'Ximen Station', to: 'Dihua Street' },
+        getThere: { mode: 'car', how: 'Hwy 21 → Freeway 6 → Freeway 3 north → Taipei', duration: '≈3h (≈200 km)', from: '文武廟 日月潭', to: 'Dihua Street' },
       },
       {
-        time: '16:30',
+        time: '15:00',
+        title: 'Dadaocheng & Dihua Street',
+        details:
+          "Taipei's best-preserved old town: shophouses, dried goods, tea, Xiahai City God Temple — good for souvenirs. Park in a public car park nearby.",
+        map: 'Dihua Street',
+        at: [25.0565, 121.51],
+      },
+      {
+        time: '16:45',
         title: 'Sunset at Dadaocheng Wharf',
         details: 'Riverside container bars and food stalls; sunset ≈17:05.',
         map: 'Dadaocheng Wharf',
         at: [25.0563, 121.5083],
+        optional: true,
         getThere: { mode: 'walk', how: 'Walk west to the river', duration: '≈10 min' },
       },
       {
         time: '17:30',
-        title: 'Night market: Shilin Night Market',
+        title: 'Early dinner: Ningxia Night Market',
         details:
-          "Last dinner in Taiwan: Hot Star fried chicken, oyster omelette, pepper buns, the underground food court. Get off at Jiantan station. Early evening is less crowded.",
-        map: 'Shilin Night Market',
-        at: [25.088, 121.5241],
-        getThere: { mode: 'mrt', how: 'Walk to Daqiaotou / Zhongshan, then red line → Jiantan', duration: '≈30 min', from: 'Dadaocheng Wharf', to: 'Jiantan Station' },
+          'A compact, food-only night market ≈10 min from Dihua Street: oyster omelette, taro balls, braised pork rice. Faster than Shilin when you have a car to return.',
+        map: 'Ningxia Night Market',
+        at: [25.0566, 121.5155],
       },
       {
-        time: '19:00',
-        title: 'Back to Taipei Main → Airport MRT',
-        details: 'Red line Jiantan → Taipei Main (≈15 min), collect bags, Airport MRT Express to the terminal (≈35–40 min). Aim to arrive ≈20:20.',
-        map: 'Taoyuan International Airport',
-        at: [25.0797, 121.2342],
-        getThere: { mode: 'mrt', how: 'Red line → Taipei Main, then Airport MRT Express', duration: '≈15 min + ≈40 min', cost: '≈NT$160 pp', from: 'Jiantan Station', to: 'Taoyuan International Airport' },
+        time: '19:30',
+        title: 'Return the car at IWS → shuttle to Terminal 1',
+        details: 'Back to No. 309 Zhongzheng E. Rd., Dayuan before 20:00; their shuttle takes you to the terminal (≈10 min). Check in from ≈20:20.',
+        map: IWS,
+        at: [25.0614, 121.2052],
+        getThere: { mode: 'car', how: 'Freeway 1 / Airport Expressway (Hwy 4) west', duration: '≈50 min', from: 'Ningxia Night Market', to: IWS },
       },
       {
         time: '23:20',
@@ -318,8 +497,8 @@ export const daysV2: Day[] = [
       },
     ],
     alternatives: [
-      'Running late? Swap Shilin for Ningxia Night Market — a 15 min walk from Dadaocheng Wharf and 10 min from Taipei Main.',
-      'Return the car at Taoyuan Airport in the evening instead (drive Taipei → TPE ≈50 min) — but Taipei city driving and parking are stressful; the MRT is easier.',
+      'Easier last day: skip Taipei. Lake morning + Xiangshan cycling, then Daxi Old Street (大溪老街, ≈30 min from IWS) on the way, and return the car early.',
+      'Really want Shilin Night Market? It is ≈25 min from Dihua Street by car and busy — only if you are ahead of schedule.',
     ],
   },
 ];

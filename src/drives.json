@@ -1,192 +1,74 @@
 [
   {
-    "id": "fenqihu-alishan",
-    "day": "2026-11-29",
-    "label": "Fenqihu → Alishan",
-    "from": [
-      23.5013,
-      120.6955
-    ],
-    "to": [
-      23.5103,
-      120.804
-    ],
-    "roads": "County Rd 169 back up to Hwy 18, then Hwy 18 to the Alishan gate",
-    "km": 38,
-    "time": "≈1h15",
-    "versions": [
-      "v1",
-      "v2"
-    ]
-  },
-  {
-    "id": "alishan-tataka",
-    "day": "2026-11-30",
-    "label": "Alishan → Tataka",
-    "from": [
-      23.5103,
-      120.804
-    ],
-    "to": [
-      23.472,
-      120.889
-    ],
-    "roads": "Hwy 18 east to the end at Tataka visitor center",
-    "km": 20,
-    "time": "≈50 min",
-    "versions": [
-      "v1",
-      "v2"
-    ]
-  },
-  {
-    "id": "tataka-alishan",
-    "day": "2026-11-30",
-    "label": "Tataka → Alishan",
-    "from": [
-      23.472,
-      120.889
-    ],
-    "to": [
-      23.5103,
-      120.804
-    ],
-    "roads": "Hwy 18 west, same road back",
-    "km": 20,
-    "time": "≈50 min",
-    "versions": [
-      "v1",
-      "v2"
-    ]
-  },
-  {
-    "id": "alishan-sml",
-    "day": "2026-12-01",
-    "label": "Alishan → Sun Moon Lake",
-    "from": [
-      23.5103,
-      120.804
-    ],
-    "to": [
-      23.8662,
-      120.91
-    ],
-    "roads": "Hwy 18 down to Shizhuo → County Rd 嘉155 / 149甲 / 149 via Ruili → Hwy 3 (Zhushan) → 151 → 139 → 投58 → Hwy 16 → Hwy 21 to the lake",
-    "km": 113,
-    "time": "≈3h10",
-    "versions": [
-      "v1",
-      "v2"
-    ]
-  },
-  {
-    "id": "tpe-qingshui",
+    "id": "iws-shengxing",
     "day": "2026-11-28",
-    "label": "Car pick-up (Dayuan) → Qingshui Service Area",
+    "label": "IWS (Dayuan) → Shengxing Station",
     "from": [
       25.0614,
       121.2052
     ],
     "to": [
-      24.2785,
-      120.602
+      24.3881,
+      120.782
     ],
-    "roads": "Freeway 2 → Freeway 3 south to Qingshui Service Area",
-    "km": 125,
+    "roads": "Freeway 1 / Freeway 3 south → Sanyi exit → Miaoli 49",
+    "km": 100,
     "time": "≈1h20",
     "versions": [
       "v2"
     ]
   },
   {
-    "id": "qingshui-rainbow",
+    "id": "shengxing-longteng",
     "day": "2026-11-28",
-    "label": "Qingshui → Rainbow Village",
+    "label": "Shengxing → Longteng Broken Bridge",
     "from": [
-      24.2785,
-      120.602
+      24.3881,
+      120.782
     ],
     "to": [
-      24.1338,
-      120.61
+      24.3585,
+      120.774
     ],
-    "roads": "Freeway 3 south → Taichung (Nantun)",
-    "km": 25,
-    "time": "≈30 min",
-    "versions": [
-      "v2"
-    ]
-  },
-  {
-    "id": "rainbow-miyahara",
-    "day": "2026-11-28",
-    "label": "Rainbow Village → Miyahara",
-    "from": [
-      24.1338,
-      120.61
-    ],
-    "to": [
-      24.1375,
-      120.6838
-    ],
-    "roads": "City streets into central Taichung",
-    "km": 10,
-    "time": "≈25 min",
-    "versions": [
-      "v2"
-    ]
-  },
-  {
-    "id": "market-theater",
-    "day": "2026-11-28",
-    "label": "Second Market → National Taichung Theater",
-    "from": [
-      24.1418,
-      120.6805
-    ],
-    "to": [
-      24.1627,
-      120.6402
-    ],
-    "roads": "Taiwan Blvd west to Xitun",
+    "roads": "Miaoli 49 / 130 south",
     "km": 6,
-    "time": "≈20 min",
+    "time": "≈15 min",
     "versions": [
       "v2"
     ]
   },
   {
-    "id": "theater-chiayi",
+    "id": "longteng-taichung",
     "day": "2026-11-28",
-    "label": "Taichung → Chiayi",
+    "label": "Longteng → Taichung Second Market",
     "from": [
-      24.1627,
-      120.6402
+      24.3585,
+      120.774
     ],
     "to": [
-      23.4793,
-      120.4413
+      24.1424,
+      120.6788
     ],
-    "roads": "Freeway 1 (or Freeway 3) south to Chiayi city",
-    "km": 95,
-    "time": "≈1h20",
+    "roads": "Freeway 1 south → Taichung",
+    "km": 40,
+    "time": "≈50 min",
     "versions": [
       "v2"
     ]
   },
   {
-    "id": "chiayi-city-fenqihu",
-    "day": "2026-11-29",
-    "label": "Chiayi → Fenqihu",
+    "id": "taichung-guguan",
+    "day": "2026-11-28",
+    "label": "Taichung → Guguan hot springs",
     "from": [
-      23.4793,
-      120.4413
+      24.1446,
+      120.6628
     ],
     "to": [
-      23.5013,
-      120.6955
+      24.2033,
+      121.0092
     ],
-    "roads": "Hwy 18 (Alishan Hwy) → County Rd 159甲 → 169 to Fenqihu",
+    "roads": "Freeway 4 / Hwy 3 → Dongshi → Hwy 8 east",
     "km": 60,
     "time": "≈1h20",
     "versions": [
@@ -194,20 +76,172 @@
     ]
   },
   {
-    "id": "sml-taipei",
-    "day": "2026-12-02",
-    "label": "Sun Moon Lake → Taipei",
+    "id": "guguan-goya",
+    "day": "2026-11-28",
+    "label": "Guguan → Goya Spring Resort",
     "from": [
-      23.8662,
-      120.91
+      24.2033,
+      121.0092
     ],
     "to": [
-      25.0478,
-      121.517
+      24.1613,
+      120.9577
     ],
-    "roads": "Hwy 21 → Freeway 6 → Freeway 3 north → Taipei",
-    "km": 215,
-    "time": "≈2h45–3h",
+    "roads": "Hwy 8 back west",
+    "km": 10,
+    "time": "≈20 min",
+    "versions": [
+      "v2"
+    ]
+  },
+  {
+    "id": "goya-chiayi",
+    "day": "2026-11-29",
+    "label": "Goya → Chiayi City",
+    "from": [
+      24.1613,
+      120.9577
+    ],
+    "to": [
+      23.479,
+      120.4495
+    ],
+    "roads": "Hwy 8 → Freeway 4 → Freeway 3 or 1 south",
+    "km": 150,
+    "time": "≈2h10",
+    "versions": [
+      "v2"
+    ]
+  },
+  {
+    "id": "chiayi-shizhuo",
+    "day": "2026-11-29",
+    "label": "Chiayi → Shizhuo (嵩茂)",
+    "from": [
+      23.4768,
+      120.4407
+    ],
+    "to": [
+      23.4711,
+      120.7064
+    ],
+    "roads": "Hwy 159 → Hwy 18 east",
+    "km": 50,
+    "time": "≈1h15",
+    "versions": [
+      "v2"
+    ]
+  },
+  {
+    "id": "shizhuo-fenqihu",
+    "day": "2026-11-30",
+    "label": "Shizhuo → Fenqihu",
+    "from": [
+      23.4711,
+      120.7064
+    ],
+    "to": [
+      23.5053,
+      120.6951
+    ],
+    "roads": "County Rd 169",
+    "km": 12,
+    "time": "≈25 min",
+    "versions": [
+      "v2"
+    ]
+  },
+  {
+    "id": "fenqihu-saiji",
+    "day": "2026-11-30",
+    "label": "Fenqihu → Saiji Tea House",
+    "from": [
+      23.5053,
+      120.6951
+    ],
+    "to": [
+      23.4715,
+      120.705
+    ],
+    "roads": "County Rd 169 back to Shizhuo",
+    "km": 12,
+    "time": "≈25 min",
+    "versions": [
+      "v2"
+    ]
+  },
+  {
+    "id": "saiji-alishan",
+    "day": "2026-11-30",
+    "label": "Shizhuo → Alishan",
+    "from": [
+      23.4715,
+      120.705
+    ],
+    "to": [
+      23.5103,
+      120.804
+    ],
+    "roads": "Hwy 18 east to the Alishan gate",
+    "km": 25,
+    "time": "≈40 min",
+    "versions": [
+      "v2"
+    ]
+  },
+  {
+    "id": "alishan-sml",
+    "day": "2026-12-01",
+    "label": "Alishan → Sun Moon Lake (Ita Thao)",
+    "from": [
+      23.5103,
+      120.804
+    ],
+    "to": [
+      23.8505,
+      120.9351
+    ],
+    "roads": "Hwy 18 → 嘉155 / 149甲 / 149 (Ruili) → Hwy 3 → Hwy 16 → Hwy 21",
+    "km": 113,
+    "time": "≈3h",
+    "versions": [
+      "v2"
+    ]
+  },
+  {
+    "id": "sml-taipei",
+    "day": "2026-12-02",
+    "label": "Sun Moon Lake → Taipei (Dihua Street)",
+    "from": [
+      23.87,
+      120.9276
+    ],
+    "to": [
+      25.0565,
+      121.51
+    ],
+    "roads": "Hwy 21 → Freeway 6 → Freeway 3 north",
+    "km": 200,
+    "time": "≈3h",
+    "versions": [
+      "v2"
+    ]
+  },
+  {
+    "id": "taipei-iws",
+    "day": "2026-12-02",
+    "label": "Taipei → IWS (Dayuan), return the car",
+    "from": [
+      25.0566,
+      121.5155
+    ],
+    "to": [
+      25.0614,
+      121.2052
+    ],
+    "roads": "Freeway 1 / Airport Expressway west",
+    "km": 40,
+    "time": "≈50 min",
     "versions": [
       "v2"
     ]

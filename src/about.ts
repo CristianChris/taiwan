@@ -13,9 +13,118 @@ export interface About {
   good?: string[];
 }
 
-export const RATINGS_CHECKED = '22 Nov 2026';
+export const RATINGS_CHECKED = '22–24 Nov 2026';
 
 export const about: Record<string, About> = {
+  '勝興車站': {
+    name: 'Shengxing Station (勝興車站)',
+    rating: 4.5,
+    reviews: 8204,
+    about:
+      "At 402 m, the highest point of Taiwan's old western mountain railway (1903–1998). The wooden Japanese-era station, old tunnel and tracks are now a heritage site, with a small old street of Hakka snacks and teahouses next to it.",
+    good: ['Busy at weekends from late morning — arriving around 09:30 helps.'],
+  },
+  '舊山線鐵道自行車': {
+    name: 'Old Mountain Line Rail Bike (舊山線鐵道自行車)',
+    q: 'Old Mountain Line Rail Bike Shengxing Station',
+    rating: 4.2,
+    reviews: 28145,
+    about:
+      'Electric-assist rail bikes on the disused mountain line between Shengxing and Longteng, through tunnels and over brick viaducts. Rides run in timed slots.',
+    good: ['Book a slot online in advance; weekend slots sell out.'],
+  },
+  '龍騰斷橋': {
+    name: 'Longteng Broken Bridge (龍騰斷橋 · 魚藤坪橋遺址)',
+    rating: 4.3,
+    reviews: 24583,
+    about:
+      'The red-brick piers of the 1907 Yutengping railway bridge, left standing after the 1935 Hsinchu–Taichung earthquake and one of the most photographed ruins in Taiwan.',
+  },
+  '審計新村': {
+    name: 'Shenji New Village (審計新村)',
+    about:
+      'A lane of 1960s government staff houses in West District, Taichung, turned into small cafés, design shops and weekend market stalls.',
+  },
+  '谷關溫泉': {
+    name: 'Guguan Hot Springs (谷關溫泉)',
+    rating: 4.2,
+    reviews: 350,
+    about:
+      'A hot-spring village at about 750 m in the Dajia River valley in Taichung’s mountains, known since the Japanese era. The short main street has the Mingzhi Hot Spring Hotel, a hot-spring park and a suspension bridge over the river.',
+  },
+  'Goya Spring Resort': {
+    name: 'Goya Spring Resort (谷野會館)',
+    rating: 3.9,
+    reviews: 2301,
+    about: 'Hot-spring resort hotel on Dongguan Road below Guguan, with indoor and outdoor hot-spring baths.',
+  },
+  '檜意森活村': {
+    name: 'Hinoki Village (檜意森活村)',
+    rating: 4.3,
+    reviews: 41054,
+    about:
+      'A cluster of restored 1914–1940s cypress-wood houses built for the Alishan logging staff, now shops, cafés and small exhibitions, next to Beimen station.',
+  },
+  '阿里山森林鐵路北門車站': {
+    name: 'Beimen Station (北門車站)',
+    q: 'North Gate Station Chiayi',
+    rating: 4.3,
+    reviews: 699,
+    about: 'The 1912 cypress-wood station of the Alishan Forest Railway in Chiayi city, the old starting point for the mountain line.',
+  },
+  '嘉義市立美術館': {
+    name: 'Chiayi Art Museum (嘉義市立美術館)',
+    rating: 4.5,
+    reviews: 5751,
+    about: 'A 1936 tobacco and alcohol office restored into a bright art museum with a café, focusing on Chiayi’s painters.',
+    good: ['Museums in Taiwan are usually closed on Mondays — 29 Nov is a Sunday, so it should be open.'],
+  },
+  '嵩茂渡假中心': {
+    name: '嵩茂渡假中心 (Song Mao resort)',
+    rating: 3.1,
+    reviews: 384,
+    about: 'Mountain lodge in Leye village in the Shizhuo tea area, next to Saiji Tea House and a few minutes from the Mist Trail.',
+  },
+  '霧之道 石棹': {
+    name: 'Mist Trail, Shizhuo (霧之道)',
+    q: 'Mist Trail Shizhuo',
+    rating: 4.6,
+    reviews: 655,
+    about:
+      'One of the Shizhuo trail network (Mist Trail, Tea Trail, Sunset Trail, Cedar Trail): short, mostly flat paths through Japanese cedar and between tea terraces at about 1,300 m. Afternoon fog often rolls through, hence the name.',
+  },
+  '奮起湖 杉林步道': {
+    name: 'Fenqihu Cedar Boardwalk Trail (杉林步道)',
+    q: 'Fenqihu Cedar Boardwalk Trail',
+    rating: 4.6,
+    reviews: 559,
+    about: 'A short boardwalk loop through tall Japanese cedar right behind Fenqihu old street. The nearby Gaozaikan old trail (糕仔崁古道, 4.3★) is a stone path through bamboo.',
+  },
+  'Saiji Tea House': {
+    name: 'Saiji Tea House',
+    rating: 4.3,
+    reviews: 1083,
+    about: 'Tea house and restaurant in Leye village in the Shizhuo tea area, with views over the tea farms.',
+    good: ['Opening hours weren’t checked — confirm before you go.'],
+  },
+  '阿里山 巨木群棧道': {
+    name: 'Giant Tree Cluster Trail (巨木群棧道)',
+    q: 'Giant Tree Cluster Trail Alishan',
+    rating: 4.8,
+    reviews: 2062,
+    about:
+      "Alishan's most famous walk: boardwalks through a grove of 1,000–2,000-year-old red cypress trees that survived the logging era, linking Shenmu station, Shouzhen Temple (4.4★) and the Sister Ponds.",
+  },
+  '文武廟 日月潭': {
+    name: 'Wenwu Temple (文武廟)',
+    rating: 4.7,
+    reviews: 4627,
+    about: 'A large temple on the north shore of Sun Moon Lake honouring Confucius and Guan Yu, with a famous lake view from its top terrace.',
+  },
+  'Ningxia Night Market': {
+    name: 'Ningxia Night Market (寧夏夜市)',
+    about: 'A compact, food-focused night market in Datong district, Taipei, known for oyster omelettes, taro balls and braised pork rice.',
+  },
   'Taoyuan International Airport': {
     name: 'Taiwan Taoyuan International Airport',
     rating: 4.4,
@@ -25,8 +134,10 @@ export const about: Record<string, About> = {
     good: ['24-hour convenience stores and ATMs in arrivals.', 'Telecom counters (Chunghwa, Taiwan Mobile, FarEasTone) sell tourist SIMs in arrivals.'],
   },
   桃園市大園區中正東路309號: {
-    name: 'Rental car pick-up, Dayuan (near Taoyuan Airport)',
-    q: '桃園市大園區中正東路309號',
+    name: 'IWS Car Rental, Dayuan (near Taoyuan Airport)',
+    q: 'IWS Car Rental Taoyuan',
+    rating: 4.5,
+    reviews: 217,
     about:
       'Your rental company’s office at No. 309, Zhongzheng E. Rd., Dayuan Dist., about 10 minutes from the airport terminals. They offer free pick-up from the airport: call 03-3862555 when you land. You need your home licence, an International Driving Permit (1949 Geneva type), your passport and a credit card. Taiwan drives on the right and freeways use eTag tolls.',
     good: ['From a foreign SIM dial +886 3 386 2555.', 'Check the car has an eTag sticker for freeway tolls.', 'Take photos of the car before you drive off.'],

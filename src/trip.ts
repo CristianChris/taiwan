@@ -93,7 +93,7 @@ export interface Tip {
 
 export const trip = {
   title: 'Taiwan 2026',
-  subtitle: 'Taipei · Alishan · Sun Moon Lake · 28 Nov – 2 Dec',
+  subtitle: 'Taichung · Alishan · Sun Moon Lake · 28 Nov – 2 Dec',
   start: '2026-11-28',
   end: '2026-12-02',
   base: {
@@ -592,8 +592,8 @@ export const tips: Tip[] = [
     points: [
       'Check visa rules for your passport (many passports, incl. Singapore, are visa-free for short stays).',
       'Fill in the Taiwan online arrival card a few days before.',
-      'Still to book: Chiayi hotel (28 Nov), Alishan hotel for 29 Nov, Sun Moon Lake hotel (1 Dec). Ali-Shan Dengshan Hotel is booked for 30 Nov.',
-      'Rental car: picked up near Taoyuan Airport on 28 Nov (No. 309, Zhongzheng E. Rd., Dayuan Dist.; free airport pick-up — call 03-3862555 on arrival). Ask them about returning it in Taipei on 2 Dec. Get an International Driving Permit before you fly — Taiwan requires it with your home licence.',
+      'Booked: IWS car (28 Nov), Goya Spring Resort (28 Nov), 嵩茂渡假中心 (29 Nov), Ali-Shan Dengshan Hotel (30 Nov), Zhushan sunrise train (1 Dec). Still to book: a hotel in Ita Thao, Sun Moon Lake (1 Dec), and the Old Mountain Line rail bike if you want it.',
+      'Rental car: IWS Car Rental, No. 309 Zhongzheng E. Rd., Dayuan. Free pick-up at Terminal 1 Exit 18 (call 03-3862555 or 0800-033414; office 08:00–20:00 — a 07:00–08:00 pick-up must be reserved in advance). Return there by 20:00 on 2 Dec. Get an International Driving Permit before you fly, and if you use the e-Gate at immigration, get an entry stamp at the counter — IWS needs it.',
       'Download offline Google Maps for Taipei.',
     ],
   },
