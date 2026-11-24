@@ -233,10 +233,9 @@ function stopHtml(s: Stop, i: number, now: boolean, num: number | null = null, c
         ${droneHtml(s.map)}
         <p>${esc(s.details)}</p>
         ${s.tips?.length ? `<ul class="stop-tips">${s.tips.map((t) => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}
-        ${imagesHtml(s)}
         <div class="stop-actions">
           ${s.map ? `<a class="btn" href="${mapUrl(s.map)}" target="_blank" rel="noopener">📍 Map</a>` : ''}
-          <a class="btn btn-ghost" href="#about/${date}/${i}">About ›</a>
+          <a class="btn btn-ghost" href="#about/${date}/${i}">${s.images?.length ? '📷 Photos & about ›' : 'About ›'}</a>
         </div>
       </div>
     </article>
