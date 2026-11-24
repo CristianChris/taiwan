@@ -416,10 +416,15 @@ main {
 
 /* parking */
 .park-pin { background: none; border: 0; }
+.park-pin i {
+  position: absolute; width: 8px; height: 8px; transform: translate(-50%, -50%);
+  border-radius: 50%; background: #1f6fd1; border: 2px solid #fff; box-shadow: 0 1px 3px rgba(0,0,0,.4);
+}
+/* the P sits just above-right of the car park's dot, so it never hides a numbered pin */
 .park-pin span {
-  position: absolute; transform: translate(-50%, -50%);
+  position: absolute; transform: translate(8px, -32px);
   display: inline-flex; align-items: center; justify-content: center;
-  width: 20px; height: 20px; border-radius: 4px;
+  width: 22px; height: 22px; border-radius: 5px;
   background: #1f6fd1; color: #fff; font: 800 12px/1 system-ui, sans-serif;
   border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.35);
 }
@@ -432,3 +437,5 @@ main {
 .parking.is-long { font-size: 0.92rem; line-height: 1.5; color: var(--ink); }
 .parking.is-long .p-icon { margin-top: 3px; }
 .parking.is-long .btn { margin-top: 6px; display: inline-block; }
+
+.map-legend { display: flex; gap: 6px; align-items: center; font-size: 0.8rem; color: var(--muted); margin: -4px 2px 12px; }

@@ -349,6 +349,7 @@ function planView(date: string) {
       </header>
       ${flightCard}
       <div id="daymap" class="day-map" role="region" aria-label="Map of day ${idx + 1}"></div>
+      <div class="map-legend"><span class="p-icon">P</span> Blue P = where to park the car. Tap it for the price, how to pay and directions. Zoom in where pins overlap.</div>
       <div class="timeline">${(() => {
         const nums = stopNumbers(day);
         const c = DAY_COLORS[idx % DAY_COLORS.length];
@@ -529,6 +530,9 @@ function initMap(id = 'map', only = mapDay) {
     d.stops.forEach((s, si) => {
       const p = s.map ? PARKING[s.map] : undefined;
       if (!p) return;
+      // thin blue link from the stop to its car park
+      if (only !== 'all' && s.at && (s.at[0] !== p.at[0] || s.at[1] !== p.at[1]))
+        L.polyline([s.at, p.at], { color: '#1f6fd1', weight: 2, opacity: 0.9, dashArray: '2 4' }).addTo(m);
       const key = p.at.join(',');
       const e = parks.get(key) ?? { at: p.at, name: p.name, price: p.price, pay: p.pay, for: [] };
       e.for.push(`${nums[si] ?? ''}. ${s.title}`);
@@ -536,9 +540,15 @@ function initMap(id = 'map', only = mapDay) {
     });
     parks.forEach((p) => {
       if (only === 'all') return; // keep the big map clean: parking shows on each day's map
+      // the car park's exact spot: a small dot kept under the numbered pins
+      L.marker(p.at, {
+        icon: L.divIcon({ className: 'park-pin', html: '<i></i>', iconSize: [0, 0] }),
+        zIndexOffset: -1000,
+        interactive: false,
+      }).addTo(m);
       L.marker(p.at, {
         icon: L.divIcon({ className: 'park-pin', html: '<span>P</span>', iconSize: [0, 0] }),
-        zIndexOffset: -500,
+        zIndexOffset: 5000, // always on top, so it is never hidden under a numbered pin
       })
         .addTo(m)
         .bindPopup(
