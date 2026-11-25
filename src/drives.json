@@ -40,14 +40,14 @@
   {
     "id": "longteng-taichung",
     "day": "2026-11-28",
-    "label": "Longteng → Taichung Second Market",
+    "label": "Longteng → Taichung (Miyahara)",
     "from": [
       24.3585,
       120.774
     ],
     "to": [
-      24.1424,
-      120.6788
+      24.1378,
+      120.6836
     ],
     "roads": "Freeway 1 south → Taichung",
     "km": 40,
@@ -61,8 +61,8 @@
     "day": "2026-11-28",
     "label": "Taichung → Guguan (Dragon Valley Hotel)",
     "from": [
-      24.1446,
-      120.6628
+      24.1424,
+      120.6788
     ],
     "to": [
       24.2031684,

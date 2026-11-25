@@ -27,7 +27,7 @@ export const daysV2: Day[] = [
     title: 'Old Mountain Line → Taichung → Guguan hot springs',
     area: 'Taoyuan · Sanyi (Old Mountain Line) · Taichung · Guguan',
     summary:
-      'Pick up the car at 07:30 and drive south to the Old Mountain Line: Shengxing station and the Longteng broken bridge. Then a taste of Taichung (Miyahara, the Second Market, Taichung Park) and up into the mountains to Guguan. Check in at Dragon Valley Hotel around 17:00, then walk the hot-spring street and soak in the hot springs.',
+      'Pick up the car at 07:30 and drive south to the Old Mountain Line: Shengxing station and the Longteng broken bridge. Then Taichung: Miyahara and Taichung Park, and an early dinner at Li Hai braised pork rice in the Second Market when it opens at 16:00. Up into the mountains to Guguan, check in at Dragon Valley Hotel around 17:50, then walk the hot-spring street and soak in the hot springs.',
     heads_up:
       'Long first day after a red-eye: ≈4 h of driving in total. Sleep on the plane, swap drivers if you both have an IDP, and keep Taichung short if you are tired. Sunset is ≈17:10, so the last mountain drive is in the dusk — take it slowly.',
     stops: [
@@ -83,45 +83,51 @@ export const daysV2: Day[] = [
       },
       {
         time: '12:45',
-        title: 'Lunch: Taichung Second Market (第二市場)',
-        details: 'Historic market hall with old-school stalls: braised pork rice, radish cake, beef soup. Park nearby.',
-        map: '台中第二市場',
-        at: [24.1424, 120.6788],
-        getThere: { mode: 'car', how: 'Freeway 1 south → Taichung', duration: '≈50 min', from: '龍騰斷橋', to: '台中第二市場' },
-      },
-      {
-        time: '13:45',
-        title: 'Miyahara & Taichung Park',
+        title: 'Miyahara & Taichung Park, light lunch',
         details:
-          'Ice cream and pineapple cakes in a 1927 eye clinic (5 min walk from the market), then the lake pavilion in Taichung Park next door.',
+          'Snack lunch around Miyahara (a 1927 eye clinic turned ice-cream and pineapple-cake shop) and the lake pavilion in Taichung Park next door. Keep it light: the big meal is Li Hai braised pork rice at 16:00. Park at the Second Market car park and walk 10 minutes.',
         map: '宮原眼科',
         at: [24.1378, 120.6836],
-        getThere: { mode: 'walk', how: 'Walk from the market', duration: '≈10 min' },
+        getThere: { mode: 'car', how: 'Freeway 1 south → Taichung', duration: '≈50 min', from: '龍騰斷橋', to: '宮原眼科' },
       },
       {
-        time: '14:45',
+        time: '14:15',
         title: 'Shenji New Village (審計新村)',
         details:
-          'If you still have energy: a lane of old staff houses turned into cafés, design shops and weekend market stalls. Leave Taichung by 15:30.',
+          'If you still have energy: a lane of old staff houses turned into cafés, design shops and weekend market stalls. Back to the Second Market by 16:00.',
         map: '審計新村',
         at: [24.1446, 120.6628],
         optional: true,
+        getThere: { mode: 'car', how: 'Across central Taichung', duration: '≈10 min', from: '宮原眼科', to: '審計新村' },
       },
       {
-        time: '17:00',
+        time: '16:00',
+        title: 'Early dinner: Li Hai braised pork rice (李海魯肉飯 · 第二市場創始店)',
+        details:
+          'The original stall of Taichung’s famous late-night braised pork rice, in the Second Market (stall 98, 三民路二段85號). It only opens around 16:00 and runs into the night, so it cannot be lunch: come at opening, before the queue. Order the braised pork rice, the braised egg and a soup; bring cash. Leave Taichung by 16:30.',
+        map: '李海魯肉飯 第二市場創始店',
+        at: [24.1424, 120.6788],
+        tips: [
+          'Hours reported Nov 2025 – Nov 2026: about 16:00 (some say 16:30) until late. One blog says closed on Thursdays; Saturday is fine.',
+          'Prices reported: braised pork rice about NT$45–80, soups NT$35–50, side dishes NT$20–40.',
+        ],
+        getThere: { mode: 'car', how: 'Back across central Taichung', duration: '≈10 min', from: '審計新村', to: '李海魯肉飯 第二市場創始店' },
+      },
+      {
+        time: '17:50',
         title: 'Check in at Dragon Valley Hotel',
         details:
-          'Check in first (from 15:00), drop the bags and leave the car at the hotel. The Guguan hot-spring street is a few minutes’ walk away.',
+          'Check in first (from 15:00), drop the bags and leave the car at the hotel. The Guguan hot-spring street is a few minutes’ walk away. The last part of the drive is a mountain road after sunset (≈17:10): take it slowly.',
         map: 'Dragon Valley Hotel',
         at: [24.2031684, 121.0044866],
         booked: true,
-        getThere: { mode: 'car', how: 'Freeway 4 / Hwy 3 → Dongshi → Hwy 8 east', duration: '≈1h20 (≈60 km)', from: '審計新村', to: 'Dragon Valley Hotel' },
+        getThere: { mode: 'car', how: 'Freeway 4 / Hwy 3 → Dongshi → Hwy 8 east', duration: '≈1h20 (≈60 km)', from: '李海魯肉飯 第二市場創始店', to: 'Dragon Valley Hotel' },
       },
       {
-        time: '17:30',
-        title: 'Walk the Guguan hot-spring street (谷關溫泉 · Mingzhi area), dinner, onsen',
+        time: '18:15',
+        title: 'Walk the Guguan hot-spring street (谷關溫泉 · Mingzhi area), onsen',
         details:
-          'A small hot-spring village in the Dajia River gorge: the old street, the suspension bridge, the hot-spring park and Mingzhi Hot Spring Hotel. Walk it at dusk, have dinner on the street or at the hotel, then back for the hot-spring baths and an early night.',
+          'A small hot-spring village in the Dajia River gorge: the old street, the suspension bridge, the hot-spring park and Mingzhi Hot Spring Hotel. Walk it in the evening (snacks on the street if you are hungry again), then back for the hot-spring baths and an early night.',
         map: '谷關溫泉',
         at: [24.2033, 121.0092],
         getThere: { mode: 'walk', how: 'Along Dongguan Rd from the hotel', duration: '≈5 min', from: 'Dragon Valley Hotel', to: '谷關溫泉' },

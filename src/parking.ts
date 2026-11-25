@@ -69,6 +69,7 @@ export const PARKING: Record<string, Parking> = {
     note: 'Walk about 10 minutes up to the bridge viewpoint.',
   },
   '台中第二市場': SECOND_MARKET,
+  '李海魯肉飯 第二市場創始店': { ...SECOND_MARKET, note: 'The stall is inside the Second Market, 2 minutes’ walk.' },
   '宮原眼科': { ...SECOND_MARKET, note: 'Same car park as the Second Market: walk about 10 minutes.' },
   '審計新村': {
     name: 'National Taiwan Museum of Fine Arts car park (國美館民生園區停車場)',

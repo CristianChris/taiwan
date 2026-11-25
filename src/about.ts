@@ -52,6 +52,11 @@ export const about: Record<string, About> = {
     about:
       'A hot-spring village at about 750 m in the Dajia River valley in Taichung’s mountains, known since the Japanese era. The short main street has the Mingzhi Hot Spring Hotel, a hot-spring park and a suspension bridge over the river.',
   },
+  '李海魯肉飯 第二市場創始店': {
+    name: 'Li Hai Braised Pork Rice (李海魯肉飯 · 第二市場創始店)',
+    about:
+      'A family stall in Taichung’s Second Market selling braised pork rice for over 60 years, famous as a late-night spot: it opens in the late afternoon (about 16:00) and runs into the night. Classic order: braised pork rice, braised egg, a fish-ball or meatball soup and blanched greens. Stall 98, No. 85, Sec. 2, Sanmin Rd.',
+  },
   'Dragon Valley Hotel': {
     name: 'Dragon Valley Hotel & Paradise (龍谷大飯店)',
     q: 'Dragon Valley Hotel Guguan',

@@ -32,6 +32,7 @@ export const DRONE: Record<string, { status: DroneStatus; note: string }> = {
   '龍騰斷橋': { status: 'ok', note: 'The classic drone shot of the broken brick piers in the valley. Popular — take off away from visitors and never fly over them.' },
   '舊山線鐵道自行車': { status: 'no', note: 'Don’t fly over the rail-bike riders.' },
   '台中第二市場': { status: 'no', note: 'Dense city centre and crowds.' },
+  '李海魯肉飯 第二市場創始店': { status: 'no', note: 'Dense city centre and crowds.' },
   '宮原眼科': { status: 'no', note: 'Central Taichung, crowds.' },
   '審計新村': { status: 'no', note: 'City lane with crowds.' },
   '谷關溫泉': { status: 'check', note: 'Mountain gorge and suspension bridge — scenic, but check the CAA map and local signs; don’t fly over the hot-spring street.' },
