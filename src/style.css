@@ -453,3 +453,12 @@ main {
 .massage h3 { margin: 0 0 8px; }
 .massage ul { margin: 0; padding-left: 18px; }
 .massage li { margin: 0 0 8px; }
+
+/* language switch */
+.top-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex: none; }
+.lang { display: inline-flex; border: 1px solid rgb(255 255 255 / 0.6); border-radius: 999px; overflow: hidden; }
+.lang button {
+  font: 700 0.75rem/1 system-ui, sans-serif; color: #fff; background: transparent;
+  border: 0; padding: 6px 10px; min-width: 38px; min-height: 28px; cursor: pointer;
+}
+.lang button.is-active { background: #fff; color: var(--accent); }

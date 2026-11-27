@@ -9,6 +9,7 @@ import { trip, flights, places, tips, type Leg, type Stop, type Stay, type Day, 
 import { versions } from './versions';
 import drivesData from './drives.json';
 import routesData from './routes.generated.json';
+import { lang, setLang, tr, t, locale } from './i18n';
 
 interface Drive {
   id: string;
@@ -47,8 +48,9 @@ function navUrl(d: Drive) {
 function driveMeta(d: Drive) {
   const r = routes[d.id];
   if (!r) return `${d.km} km · ${esc(d.time)}`;
-  const t = r.min >= 60 ? `${Math.floor(r.min / 60)}h${String(r.min % 60).padStart(2, '0')}` : `${r.min} min`;
-  return `${r.km} km · ≈${t} (mountain roads often take longer)`;
+  const tt = t;
+  const t2 = r.min >= 60 ? `${Math.floor(r.min / 60)}h${String(r.min % 60).padStart(2, '0')}` : `${r.min} min`;
+  return `${r.km} km · ≈${t2}${tt(' (mountain roads often take longer)', ' (pe drumurile de munte durează adesea mai mult)')}`;
 }
 
 function driveHtml(d: Drive) {
@@ -56,10 +58,10 @@ function driveHtml(d: Drive) {
   const color = DAY_COLORS[i % DAY_COLORS.length];
   return `
     <article class="drive" style="border-left-color:${color}">
-      <div class="drive-top"><strong>🚗 ${esc(d.label)}</strong><span class="muted">Day ${i + 1}</span></div>
+      <div class="drive-top"><strong>🚗 ${esc(d.label)}</strong><span class="muted">${t('Day', 'Ziua')} ${i + 1}</span></div>
       <div class="drive-meta">${driveMeta(d)}</div>
       <p>${esc(d.roads)}</p>
-      <a class="btn" href="${navUrl(d)}" target="_blank" rel="noopener">Navigate in Google Maps ↗</a>
+      <a class="btn" href="${navUrl(d)}" target="_blank" rel="noopener">${t('Navigate in Google Maps ↗', 'Navigare în Google Maps ↗')}</a>
     </article>`;
 }
 
@@ -79,7 +81,9 @@ const MODE_ICON: Record<Mode, string> = {
 
 const DAY_COLORS = ['#c8102e', '#2f7d4f', '#1f6fb2', '#b7791f', '#7b3fa0'];
 
-const esc = (s: string) =>
+/** escape for HTML, translating content text when Romanian is on */
+const esc = (s: string) => escRaw(tr(s));
+const escRaw = (s: string) =>
   s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
 
 const mapUrl = (q: string) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q + (/[一-鿿]/.test(q) ? '' : ', Taiwan'))}`;
@@ -91,7 +95,7 @@ function taiwanToday(): string {
   return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Taipei' }).format(new Date());
 }
 function fmtDay(iso: string, opts: Intl.DateTimeFormatOptions) {
-  return new Date(iso + 'T12:00:00+08:00').toLocaleDateString('en-GB', { timeZone: 'Asia/Taipei', ...opts });
+  return new Date(iso + 'T12:00:00+08:00').toLocaleDateString(locale(), { timeZone: 'Asia/Taipei', ...opts });
 }
 /** Current time in Taiwan as minutes since midnight */
 function taiwanMinutes(): number {
@@ -124,11 +128,11 @@ function countdown(): string {
   const today = taiwanToday();
   if (today < trip.start) {
     const n = daysBetween(today, trip.start);
-    return n === 1 ? 'Tomorrow! ✈️' : `${n} days to go`;
+    return n === 1 ? t('Tomorrow! ✈️', 'Mâine! ✈️') : t(`${n} days to go`, `încă ${n} zile`);
   }
-  if (today > trip.end) return 'Trip complete 🎉';
+  if (today > trip.end) return t('Trip complete 🎉', 'Excursie încheiată 🎉');
   const i = days.findIndex((d) => d.date === today);
-  return `Day ${i + 1} of ${days.length} — enjoy!`;
+  return t(`Day ${i + 1} of ${days.length} — enjoy!`, `Ziua ${i + 1} din ${days.length} — distracție plăcută!`);
 }
 
 // ── Routing: #plan/<date> | #explore | #tips ──
@@ -157,7 +161,7 @@ function parseHash(): View {
 function legHtml(leg: Leg) {
   const dir =
     leg.from && leg.to
-      ? `<a class="btn btn-ghost" href="${dirUrl(leg.from, leg.to, leg.mode === 'car' || leg.mode === 'taxi' ? 'driving' : leg.mode === 'walk' ? 'walking' : 'transit')}" target="_blank" rel="noopener">Directions ↗</a>`
+      ? `<a class="btn btn-ghost" href="${dirUrl(leg.from, leg.to, leg.mode === 'car' || leg.mode === 'taxi' ? 'driving' : leg.mode === 'walk' ? 'walking' : 'transit')}" target="_blank" rel="noopener">${t('Directions ↗', 'Indicații ↗')}</a>`
       : '';
   return `
     <div class="leg">
@@ -179,7 +183,7 @@ function ratingHtml(map?: string, big = false) {
   if (!a?.rating) return '';
   const full = Math.round(a.rating);
   const stars = '★★★★★'.slice(0, full) + '☆☆☆☆☆'.slice(0, 5 - full);
-  return `<a class="rating${big ? ' rating-big' : ''}" href="${reviewsUrl(a)}" target="_blank" rel="noopener" title="Google reviews, checked ${RATINGS_CHECKED}">
+  return `<a class="rating${big ? ' rating-big' : ''}" href="${reviewsUrl(a)}" target="_blank" rel="noopener" title="${t('Google reviews, checked', 'Recenzii Google, verificate')} ${RATINGS_CHECKED}">
     <span class="rating-num">${a.rating.toFixed(1)}</span><span class="stars" aria-hidden="true">${stars}</span><span class="rating-count">(${fmtCount(a.reviews ?? 0)}) Google ↗</span></a>`;
 }
 
@@ -201,7 +205,7 @@ function imagesHtml(s: Stop) {
 function droneHtml(map?: string, long = false) {
   const d = map ? DRONE[map] : undefined;
   if (!d) return '';
-  return `<div class="drone is-${d.status}"><strong>${DRONE_LABEL[d.status]}</strong>${long ? ` — ${esc(d.note)}` : ''}</div>`;
+  return `<div class="drone is-${d.status}"><strong>${esc(DRONE_LABEL[d.status])}</strong>${long ? ` — ${esc(d.note)}` : ''}</div>`;
 }
 
 function parkNav(at: L.LatLngTuple) {
@@ -215,53 +219,58 @@ function parkingHtml(map?: string, long = false) {
     return `<div class="parking"><span class="p-icon">P</span><span>${esc(p.name)} · ${esc(p.price)}</span></div>`;
   return `<div class="parking is-long"><span class="p-icon">P</span><div><strong>${esc(p.name)}</strong>
     <div>💰 ${esc(p.price)}</div><div>💳 ${esc(p.pay)}</div>${p.note ? `<div class="muted">${esc(p.note)}</div>` : ''}
-    <a class="btn" href="${parkNav(p.at)}" target="_blank" rel="noopener">🚗 Navigate to parking ↗</a></div></div>`;
+    <a class="btn" href="${parkNav(p.at)}" target="_blank" rel="noopener">🚗 ${t('Navigate to parking ↗', 'Navigare spre parcare ↗')}</a></div></div>`;
 }
 
 function massageHtml(date: string) {
   const list = MASSAGE.filter((x) => x.day === date);
   if (!list.length) return '';
-  return `<section class="massage"><h3>💆 Massage ideas today</h3><ul>${list
+  return `<section class="massage"><h3>💆 ${t('Massage ideas today', 'Idei de masaj azi')}</h3><ul>${list
     .map(
       (x) => `<li><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(x.q)}" target="_blank" rel="noopener"><strong>${esc(x.name)}</strong></a>${
         x.rating ? ` <span class="muted small">${x.rating.toFixed(1)}★ (${x.reviews!.toLocaleString('en')})</span>` : ''
       }<br><span class="small">${esc(x.note)}</span></li>`,
     )
-    .join('')}</ul><div class="about-note">💆 pins on the map. Google ratings checked ${MASSAGE_CHECKED}. A 60-minute foot or body massage is usually about NT$800–1,500; call or message ahead, Saturdays get busy.</div></section>`;
+    .join('')}</ul><div class="about-note">${t(
+    `💆 pins on the map. Google ratings checked ${MASSAGE_CHECKED}. A 60-minute foot or body massage is usually about NT$800–1,500; call or message ahead, Saturdays get busy.`,
+    `💆 pe hartă. Note Google verificate ${MASSAGE_CHECKED}. Un masaj de 60 de minute la picioare sau corp costă de obicei ≈NT$800–1.500; sunați sau scrieți dinainte, sâmbăta e aglomerat.`,
+  )}</div></section>`;
 }
 
 function stayHtml(st: Stay) {
-  const badge = st.booked ? '<span class="badge badge-booked">booked</span>' : '<span class="badge badge-guess">to book</span>';
+  const badge = st.booked
+    ? `<span class="badge badge-booked">${t('booked', 'rezervat')}</span>`
+    : `<span class="badge badge-guess">${t('to book', 'de rezervat')}</span>`;
   return `
     <section class="stay">
-      <div class="stay-kicker">🏨 Tonight</div>
+      <div class="stay-kicker">🏨 ${t('Tonight', 'Diseară')}</div>
       <h3>${esc(st.name)} ${badge}</h3>
       ${st.booked ? ratingHtml(st.map) : ''}
       ${
         st.checkIn || st.checkOut
-          ? `<div class="stay-times">${st.checkIn ? `<span>🔑 Check-in from <strong>${esc(st.checkIn)}</strong></span>` : ''}${
-              st.checkOut ? `<span>🧳 Check-out by <strong>${esc(st.checkOut)}</strong></span>` : ''
-            }${st.timesGuess ? '<span class="muted small">(usual times, check your booking)</span>' : ''}</div>`
+          ? `<div class="stay-times">${st.checkIn ? `<span>🔑 ${t('Check-in from', 'Check-in de la')} <strong>${esc(st.checkIn)}</strong></span>` : ''}${
+              st.checkOut ? `<span>🧳 ${t('Check-out by', 'Check-out până la')} <strong>${esc(st.checkOut)}</strong></span>` : ''
+            }${st.timesGuess ? `<span class="muted small">${t('(usual times, check your booking)', '(ore obișnuite, verificați rezervarea)')}</span>` : ''}</div>`
           : ''
       }
       ${st.address ? `<div class="small muted">${esc(st.address)}</div>` : ''}
       <p class="muted">${esc(st.note)}</p>
-      <div class="stop-actions"><a class="btn" href="${mapUrl(st.map)}" target="_blank" rel="noopener">📍 Map</a></div>
+      <div class="stop-actions"><a class="btn" href="${mapUrl(st.map)}" target="_blank" rel="noopener">📍 ${t('Map', 'Hartă')}</a></div>
     </section>`;
 }
 
 function stopHtml(s: Stop, i: number, now: boolean, num: number | null = null, color = '', date = '') {
   const badges = [
-    now ? '<span class="badge badge-now">now</span>' : '',
-    s.optional ? '<span class="badge badge-opt">optional</span>' : '',
-    s.guess ? '<span class="badge badge-guess" title="An assumption — please check">guess</span>' : '',
-    s.booked ? '<span class="badge badge-booked">booked</span>' : '',
+    now ? `<span class="badge badge-now">${t('now', 'acum')}</span>` : '',
+    s.optional ? `<span class="badge badge-opt">${t('optional', 'opțional')}</span>` : '',
+    s.guess ? `<span class="badge badge-guess" title="${t('An assumption — please check', 'O presupunere — verificați')}">${t('guess', 'estimare')}</span>` : '',
+    s.booked ? `<span class="badge badge-booked">${t('booked', 'rezervat')}</span>` : '',
   ].join('');
   return `
     <div class="stop-wrap" id="stop-${i}">
     ${s.getThere ? legHtml(s.getThere) : ''}
-    <article class="stop is-link${now ? ' is-now' : ''}${s.optional ? ' is-optional' : ''}" data-about="#about/${date}/${i}" tabindex="0" role="link" aria-label="About ${esc(s.title)}">
-      <div class="stop-time">${num ? `<span class="stop-num" style="background:${color}" title="Pin ${num} on the map">${num}</span>` : ''}${esc(s.time)}</div>
+    <article class="stop is-link${now ? ' is-now' : ''}${s.optional ? ' is-optional' : ''}" data-about="#about/${date}/${i}" tabindex="0" role="link" aria-label="${t('About', 'Despre')} ${esc(s.title)}">
+      <div class="stop-time">${num ? `<span class="stop-num" style="background:${color}" title="${t('Pin', 'Punctul')} ${num} ${t('on the map', 'pe hartă')}">${num}</span>` : ''}${esc(s.time)}</div>
       <div class="stop-main">
         <h3>${esc(s.title)} ${badges}</h3>
         ${ratingHtml(s.map)}
@@ -270,8 +279,8 @@ function stopHtml(s: Stop, i: number, now: boolean, num: number | null = null, c
         <p>${esc(s.details)}</p>
         ${s.tips?.length ? `<ul class="stop-tips">${s.tips.map((t) => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}
         <div class="stop-actions">
-          ${s.map ? `<a class="btn" href="${mapUrl(s.map)}" target="_blank" rel="noopener">📍 Map</a>` : ''}
-          <a class="btn btn-ghost" href="#about/${date}/${i}">${s.images?.length ? '📷 Photos & about ›' : 'About ›'}</a>
+          ${s.map ? `<a class="btn" href="${mapUrl(s.map)}" target="_blank" rel="noopener">📍 ${t('Map', 'Hartă')}</a>` : ''}
+          <a class="btn btn-ghost" href="#about/${date}/${i}">${s.images?.length ? t('📷 Photos & about ›', '📷 Poze și detalii ›') : t('About ›', 'Detalii ›')}</a>
         </div>
       </div>
     </article>
@@ -286,32 +295,32 @@ function aboutView(date: string, i: number) {
   const num = stopNumbers(day)[i];
   const color = DAY_COLORS[di % DAY_COLORS.length];
   const tips = [...(a?.good ?? []), ...(s.tips ?? [])];
-  const prev = i > 0 ? `<a class="btn btn-ghost" href="#about/${date}/${i - 1}">‹ Previous</a>` : '<span></span>';
-  const next = i < day.stops.length - 1 ? `<a class="btn btn-ghost" href="#about/${date}/${i + 1}">Next ›</a>` : '<span></span>';
+  const prev = i > 0 ? `<a class="btn btn-ghost" href="#about/${date}/${i - 1}">‹ ${t('Previous', 'Anterior')}</a>` : '<span></span>';
+  const next = i < day.stops.length - 1 ? `<a class="btn btn-ghost" href="#about/${date}/${i + 1}">${t('Next', 'Următor')} ›</a>` : '<span></span>';
   return `
     <section class="about">
-      <a class="back" href="#plan/${date}" data-back="${i}">‹ Back to Day ${di + 1}</a>
-      <div class="eyebrow">${num ? `<span class="stop-num" style="background:${color}">${num}</span>` : ''}Day ${di + 1} · ${esc(fmtDay(date, { weekday: 'short', day: 'numeric', month: 'short' }))} · ${esc(s.time)}</div>
+      <a class="back" href="#plan/${date}" data-back="${i}">‹ ${t('Back to Day', 'Înapoi la Ziua')} ${di + 1}</a>
+      <div class="eyebrow">${num ? `<span class="stop-num" style="background:${color}">${num}</span>` : ''}${t('Day', 'Ziua')} ${di + 1} · ${esc(fmtDay(date, { weekday: 'short', day: 'numeric', month: 'short' }))} · ${esc(s.time)}</div>
       <h2>${esc(a?.name ?? s.title)}</h2>
       ${a?.name && a.name !== s.title ? `<div class="about-sub">${esc(s.title)}</div>` : ''}
       ${ratingHtml(s.map, true)}
-      ${a?.rating ? `<div class="about-note">Google rating checked ${RATINGS_CHECKED}. Tap it to read the reviews.</div>` : ''}
-      ${a ? `<h3>About</h3><p>${esc(a.about)}</p>` : ''}
-      ${DRONE[s.map ?? ''] ? `<h3>Drone</h3>${droneHtml(s.map, true)}${
+      ${a?.rating ? `<div class="about-note">${t(`Google rating checked ${RATINGS_CHECKED}. Tap it to read the reviews.`, `Nota Google verificată ${RATINGS_CHECKED}. Atingeți-o pentru recenzii.`)}</div>` : ''}
+      ${a ? `<h3>${t('About', 'Despre')}</h3><p>${esc(a.about)}</p>` : ''}
+      ${DRONE[s.map ?? ''] ? `<h3>${t('Drone', 'Dronă')}</h3>${droneHtml(s.map, true)}${
         DRONE[s.map ?? '']!.status !== 'no'
-          ? `<div class="stop-actions"><a class="btn" href="https://drone.caa.gov.tw/" target="_blank" rel="noopener">🗺️ Open the CAA drone map ↗</a></div>`
+          ? `<div class="stop-actions"><a class="btn" href="https://drone.caa.gov.tw/" target="_blank" rel="noopener">🗺️ ${t('Open the CAA drone map ↗', 'Deschide harta de drone CAA ↗')}</a></div>`
           : ''
-      }<div class="about-note">Checked ${DRONE_CHECKED}. Always check the CAA drone map on the day — see Tips → Drone rules.</div>` : ''}
-      ${PARKING[s.map ?? ''] ? `<h3>Parking</h3>${parkingHtml(s.map, true)}<div class="about-note">Car park found ${PARKING_CHECKED}. Prices marked “about” are typical rates: check the sign at the gate. See Tips → Parking.</div>` : ''}
-      <h3>In your plan</h3>
+      }<div class="about-note">${t(`Checked ${DRONE_CHECKED}. Always check the CAA drone map on the day — see Tips → Drone rules.`, `Verificat ${DRONE_CHECKED}. Verificați mereu harta de drone CAA în ziua respectivă — vezi Sfaturi → Reguli pentru dronă.`)}</div>` : ''}
+      ${PARKING[s.map ?? ''] ? `<h3>${t('Parking', 'Parcare')}</h3>${parkingHtml(s.map, true)}<div class="about-note">${t(`Car park found ${PARKING_CHECKED}. Prices marked “about” are typical rates: check the sign at the gate. See Tips → Parking.`, `Parcare găsită ${PARKING_CHECKED}. Prețurile marcate „≈” sunt tarife obișnuite: verificați panoul de la intrare. Vezi Sfaturi → Parcare.`)}</div>` : ''}
+      <h3>${t('In your plan', 'În planul vostru')}</h3>
       <p>${esc(s.details)}</p>
-      ${s.getThere ? `<h3>Getting there</h3>${legHtml(s.getThere)}` : ''}
-      ${s.images?.length ? `<h3>Photos</h3>${imagesHtml(s)}` : ''}
-      ${tips.length ? `<h3>Good to know</h3><ul class="stop-tips">${tips.map((t) => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}
+      ${s.getThere ? `<h3>${t('Getting there', 'Cum ajungeți')}</h3>${legHtml(s.getThere)}` : ''}
+      ${s.images?.length ? `<h3>${t('Photos', 'Poze')}</h3>${imagesHtml(s)}` : ''}
+      ${tips.length ? `<h3>${t('Good to know', 'Bine de știut')}</h3><ul class="stop-tips">${tips.map((t) => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}
       ${s.at ? `<div id="aboutmap" class="day-map"></div>` : ''}
       <div class="stop-actions">
         ${s.map ? `<a class="btn" href="${mapUrl(s.map)}" target="_blank" rel="noopener">📍 Google Maps</a>` : ''}
-        ${a?.rating ? `<a class="btn btn-ghost" href="${reviewsUrl(a)}" target="_blank" rel="noopener">⭐ Reviews ↗</a>` : ''}
+        ${a?.rating ? `<a class="btn btn-ghost" href="${reviewsUrl(a)}" target="_blank" rel="noopener">⭐ ${t('Reviews ↗', 'Recenzii ↗')}</a>` : ''}
       </div>
       <div class="about-nav">${prev}${next}</div>
     </section>`;
@@ -341,7 +350,7 @@ function planView(date: string) {
     .map(
       (d, i) => `
       <a class="chip${d.date === date ? ' is-active' : ''}${d.date === today ? ' is-today' : ''}" href="#plan/${d.date}">
-        <span class="chip-day">Day ${i + 1}</span>
+        <span class="chip-day">${t('Day', 'Ziua')} ${i + 1}</span>
         <span class="chip-date">${fmtDay(d.date, { weekday: 'short', day: 'numeric' })}</span>
       </a>`,
     )
@@ -355,25 +364,25 @@ function planView(date: string) {
         <div class="flight">
           <div class="flight-code">✈️ ${esc(f.airline)} ${esc(f.code)}</div>
           <div class="flight-route">${esc(f.from)} → ${esc(f.to)}</div>
-          <div class="flight-times">Departs ${esc(f.depart)} · Arrives ${esc(f.arrive)}</div>
+          <div class="flight-times">${t('Departs', 'Pleacă')} ${esc(f.depart)} · ${t('Arrives', 'Sosește')} ${esc(f.arrive)}</div>
           ${f.note ? `<div class="flight-note">${esc(f.note)}</div>` : ''}
         </div>`;
         })()
       : '';
 
   return `
-    <nav class="chips" aria-label="Days">${chips}</nav>
+    <nav class="chips" aria-label="${t('Days', 'Zile')}">${chips}</nav>
     <section class="day">
       <header class="day-head">
-        <div class="day-kicker">Day ${idx + 1} · ${fmtDay(day.date, { weekday: 'long', day: 'numeric', month: 'long' })}</div>
+        <div class="day-kicker">${t('Day', 'Ziua')} ${idx + 1} · ${fmtDay(day.date, { weekday: 'long', day: 'numeric', month: 'long' })}</div>
         <h2>${esc(day.title)}</h2>
         <div class="day-area">${esc(day.area)}</div>
         <p class="day-summary">${esc(day.summary)}</p>
         ${day.heads_up ? `<div class="callout">💡 ${esc(day.heads_up)}</div>` : ''}
       </header>
       ${flightCard}
-      <div id="daymap" class="day-map" role="region" aria-label="Map of day ${idx + 1}"></div>
-      <div class="map-legend"><span class="p-icon">P</span> Blue P = where to park the car. Tap it for the price, how to pay and directions.${MASSAGE.some((x) => x.day === day.date) ? ' 💆 = massage idea.' : ''} Zoom in where pins overlap.</div>
+      <div id="daymap" class="day-map" role="region" aria-label="${t('Map of day', 'Harta zilei')} ${idx + 1}"></div>
+      <div class="map-legend"><span class="p-icon">P</span> ${t('Blue P = where to park the car. Tap it for the price, how to pay and directions.', 'P albastru = unde parcați mașina. Atingeți-l pentru preț, plată și direcții.')}${MASSAGE.some((x) => x.day === day.date) ? t(' 💆 = massage idea.', ' 💆 = idee de masaj.') : ''} ${t('Zoom in where pins overlap.', 'Măriți harta unde punctele se suprapun.')}</div>
       <div class="timeline">${(() => {
         const nums = stopNumbers(day);
         const c = DAY_COLORS[idx % DAY_COLORS.length];
@@ -383,12 +392,12 @@ function planView(date: string) {
       ${day.stay ? stayHtml(day.stay) : ''}
       ${
         day.alternatives?.length
-          ? `<section class="alts"><h3>Swap-in ideas</h3><ul>${day.alternatives.map((a) => `<li>${esc(a)}</li>`).join('')}</ul></section>`
+          ? `<section class="alts"><h3>${t('Swap-in ideas', 'Variante de schimb')}</h3><ul>${day.alternatives.map((a) => `<li>${esc(a)}</li>`).join('')}</ul></section>`
           : ''
       }
       <div class="pager">
-        ${idx > 0 ? `<a class="btn btn-ghost" href="#plan/${days[idx - 1].date}">← Day ${idx}</a>` : '<span></span>'}
-        ${idx < days.length - 1 ? `<a class="btn btn-ghost" href="#plan/${days[idx + 1].date}">Day ${idx + 2} →</a>` : ''}
+        ${idx > 0 ? `<a class="btn btn-ghost" href="#plan/${days[idx - 1].date}">← ${t('Day', 'Ziua')} ${idx}</a>` : '<span></span>'}
+        ${idx < days.length - 1 ? `<a class="btn btn-ghost" href="#plan/${days[idx + 1].date}">${t('Day', 'Ziua')} ${idx + 2} →</a>` : ''}
       </div>
     </section>`;
 }
@@ -411,10 +420,10 @@ function exploreView() {
   );
   return `
     <section class="page">
-      <h2>Things to do</h2>
-      <p class="muted">Everything in the plan, plus extra ideas if you have spare time or want to swap something out.</p>
+      <h2>${t('Things to do', 'Ce putem face')}</h2>
+      <p class="muted">${t('Everything in the plan, plus extra ideas if you have spare time or want to swap something out.', 'Tot ce e în plan, plus idei în plus dacă aveți timp liber sau vreți să schimbați ceva.')}</p>
       <div class="filters">
-        ${kinds.map((k) => `<button class="filter${k === exploreFilter ? ' is-active' : ''}" data-filter="${esc(k)}">${esc(k)}</button>`).join('')}
+        ${kinds.map((k) => `<button class="filter${k === exploreFilter ? ' is-active' : ''}" data-filter="${escRaw(k)}">${k === 'All' ? t('All', 'Toate') : k === 'Planned' ? t('Planned', 'În plan') : k === 'Extra ideas' ? t('Extra ideas', 'Idei în plus') : esc(k)}</button>`).join('')}
       </div>
       <div class="cards">
         ${list
@@ -424,13 +433,13 @@ function exploreView() {
             <article class="card">
               <div class="card-top">
                 <span class="badge">${esc(p.kind)}</span>
-                ${di >= 0 ? `<a class="badge badge-day" href="#plan/${p.day}">Day ${di + 1}</a>` : '<span class="badge badge-idea">Extra idea</span>'}
+                ${di >= 0 ? `<a class="badge badge-day" href="#plan/${p.day}">${t('Day', 'Ziua')} ${di + 1}</a>` : `<span class="badge badge-idea">${t('Extra idea', 'Idee în plus')}</span>`}
               </div>
               <h3>${esc(p.name)}</h3>
               <p>${esc(p.why)}</p>
               <div class="card-foot">
                 <span class="muted">${esc(p.area)} · ${esc(p.time)}</span>
-                <a class="btn" href="${mapUrl(p.map)}" target="_blank" rel="noopener">📍 Map</a>
+                <a class="btn" href="${mapUrl(p.map)}" target="_blank" rel="noopener">📍 ${t('Map', 'Hartă')}</a>
               </div>
             </article>`;
           })
@@ -442,14 +451,14 @@ function exploreView() {
 function tipsView() {
   return `
     <section class="page">
-      <h2>Good to know</h2>
+      <h2>${t('Good to know', 'Bine de știut')}</h2>
       <section class="tip">
-        <h3><span aria-hidden="true">🏨</span> Where you sleep</h3>
+        <h3><span aria-hidden="true">🏨</span> ${t('Where you sleep', 'Unde dormiți')}</h3>
         <ul>${days
           .filter((d) => d.stay)
           .map(
             (d) =>
-              `<li><a href="#plan/${d.date}"><strong>${fmtDay(d.date, { weekday: 'short', day: 'numeric', month: 'short' })}</strong></a> · ${esc(d.stay!.name)}${d.stay!.checkIn ? ` <span class="muted small">(in ${esc(d.stay!.checkIn)} · out ${esc(d.stay!.checkOut ?? '')})</span>` : ''} ${d.stay!.booked ? '<span class="badge badge-booked">booked</span>' : '<span class="badge badge-guess">to book</span>'}</li>`,
+              `<li><a href="#plan/${d.date}"><strong>${fmtDay(d.date, { weekday: 'short', day: 'numeric', month: 'short' })}</strong></a> · ${esc(d.stay!.name)}${d.stay!.checkIn ? ` <span class="muted small">(${t('in', 'check-in')} ${esc(d.stay!.checkIn)} · ${t('out', 'check-out')} ${esc(d.stay!.checkOut ?? '')})</span>` : ''} ${d.stay!.booked ? `<span class="badge badge-booked">${t('booked', 'rezervat')}</span>` : `<span class="badge badge-guess">${t('to book', 'de rezervat')}</span>`}</li>`,
           )
           .join('')}</ul>
       </section>
@@ -460,7 +469,7 @@ function tipsView() {
           <div class="flight">
             <div class="flight-code">✈️ ${esc(f.airline)} ${esc(f.code)}</div>
             <div class="flight-route">${esc(f.from)} → ${esc(f.to)}</div>
-            <div class="flight-times">Departs ${esc(f.depart)} · Arrives ${esc(f.arrive)}</div>
+            <div class="flight-times">${t('Departs', 'Pleacă')} ${esc(f.depart)} · ${t('Arrives', 'Sosește')} ${esc(f.arrive)}</div>
             ${f.note ? `<div class="flight-note">${esc(f.note)}</div>` : ''}
           </div>`,
           )
@@ -475,7 +484,7 @@ function tipsView() {
         </section>`,
         )
         .join('')}
-      <p class="muted small">Times, prices and opening hours marked ≈ are estimates — double-check on Google Maps before you go.</p>
+      <p class="muted small">${t('Times, prices and opening hours marked ≈ are estimates — double-check on Google Maps before you go.', 'Orele, prețurile și programele marcate cu ≈ sunt estimări — verificați pe Google Maps înainte să mergeți.')}</p>
     </section>`;
 }
 
@@ -486,20 +495,20 @@ let mapDay = 'all';
 
 function mapView() {
   const chips = [
-    `<button class="filter${mapDay === 'all' ? ' is-active' : ''}" data-mapday="all">All days</button>`,
+    `<button class="filter${mapDay === 'all' ? ' is-active' : ''}" data-mapday="all">${t('All days', 'Toate zilele')}</button>`,
     ...days.map(
       (d, i) =>
-        `<button class="filter${mapDay === d.date ? ' is-active' : ''}" data-mapday="${d.date}"><span class="dot" style="background:${DAY_COLORS[i % DAY_COLORS.length]}"></span>Day ${i + 1}</button>`,
+        `<button class="filter${mapDay === d.date ? ' is-active' : ''}" data-mapday="${d.date}"><span class="dot" style="background:${DAY_COLORS[i % DAY_COLORS.length]}"></span>${t('Day', 'Ziua')} ${i + 1}</button>`,
     ),
   ].join('');
   return `
     <section class="page map-page">
       <div class="filters">${chips}</div>
-      <div id="map" role="region" aria-label="Map of the trip"></div>
-      <p class="muted small">Solid lines are the driving routes on real roads. Dashed lines just connect the other stops in order (train, MRT, walking). Tap a pin or a route for details.</p>
+      <div id="map" role="region" aria-label="${t('Map of the trip', 'Harta excursiei')}"></div>
+      <p class="muted small">${t('Solid lines are the driving routes on real roads. Dashed lines just connect the other stops in order (train, MRT, walking). Tap a pin or a route for details.', 'Liniile continue sunt traseele cu mașina pe drumuri reale. Liniile punctate doar leagă celelalte opriri în ordine (tren, metrou, pe jos). Atingeți un punct sau un traseu pentru detalii.')}</p>
       ${(() => {
         const list = drives.filter((d) => mapDay === 'all' || d.day === mapDay);
-        return list.length ? `<h3 class="drives-title">Driving routes</h3><div class="drives">${list.map(driveHtml).join('')}</div>` : '';
+        return list.length ? `<h3 class="drives-title">${t('Driving routes', 'Trasee cu mașina')}</h3><div class="drives">${list.map(driveHtml).join('')}</div>` : '';
       })()}
     </section>`;
 }
@@ -530,8 +539,8 @@ function initMap(id = 'map', only = mapDay) {
       if (!last || last[0] !== s.at[0] || last[1] !== s.at[1]) path.push(s.at);
       bounds.push(s.at);
       const key = s.at.join(',');
-      const label = `<strong>${nums[si]}. Day ${i + 1} · ${esc(s.time)}</strong><br>${esc(s.title)}<br>
-        <a href="#plan/${d.date}">Open day</a>${s.map ? ` · <a href="${mapUrl(s.map)}" target="_blank" rel="noopener">Google Maps ↗</a>` : ''}`;
+      const label = `<strong>${nums[si]}. ${t('Day', 'Ziua')} ${i + 1} · ${esc(s.time)}</strong><br>${esc(s.title)}<br>
+        <a href="#plan/${d.date}">${t('Open day', 'Deschide ziua')}</a>${s.map ? ` · <a href="${mapUrl(s.map)}" target="_blank" rel="noopener">Google Maps ↗</a>` : ''}`;
       const pin = pins.get(key) ?? { at: s.at, nums: [], labels: [] };
       pin.nums.push(nums[si]!);
       pin.labels.push(label);
@@ -560,7 +569,7 @@ function initMap(id = 'map', only = mapDay) {
         L.polyline([s.at, p.at], { color: '#1f6fd1', weight: 2, opacity: 0.9, dashArray: '2 4' }).addTo(m);
       const key = p.at.join(',');
       const e = parks.get(key) ?? { at: p.at, name: p.name, price: p.price, pay: p.pay, for: [] };
-      e.for.push(`${nums[si] ?? ''}. ${s.title}`);
+      e.for.push(`${nums[si] ?? ''}. ${tr(s.title)}`);
       parks.set(key, e);
     });
     parks.forEach((p) => {
@@ -577,7 +586,7 @@ function initMap(id = 'map', only = mapDay) {
       })
         .addTo(m)
         .bindPopup(
-          `<strong>🅿️ ${esc(p.name)}</strong><br>For: ${p.for.map(esc).join(', ')}<br>💰 ${esc(p.price)}<br>💳 ${esc(p.pay)}<br><a href="${parkNav(p.at)}" target="_blank" rel="noopener">Navigate to parking ↗</a>`,
+          `<strong>🅿️ ${esc(p.name)}</strong><br>${t('For', 'Pentru')}: ${p.for.map(escRaw).join(', ')}<br>💰 ${esc(p.price)}<br>💳 ${esc(p.pay)}<br><a href="${parkNav(p.at)}" target="_blank" rel="noopener">${t('Navigate to parking ↗', 'Navigare spre parcare ↗')}</a>`,
         );
       bounds.push(p.at);
     });
@@ -603,7 +612,7 @@ function initMap(id = 'map', only = mapDay) {
     L.polyline(r.line, { color: DAY_COLORS[i % DAY_COLORS.length], weight: 5, opacity: 1 })
       .addTo(m)
       .bindPopup(
-        `<strong>🚗 ${esc(d.label)}</strong><br>${driveMeta(d)}<br>${esc(d.roads)}<br><a href="${navUrl(d)}" target="_blank" rel="noopener">Navigate in Google Maps ↗</a>`,
+        `<strong>🚗 ${esc(d.label)}</strong><br>${driveMeta(d)}<br>${esc(d.roads)}<br><a href="${navUrl(d)}" target="_blank" rel="noopener">${t('Navigate in Google Maps ↗', 'Navigare în Google Maps ↗')}</a>`,
       );
     r.line.forEach((p) => bounds.push(p));
   });
@@ -625,14 +634,19 @@ function render() {
         <h1>🇹🇼 ${esc(trip.title)}</h1>
         <div class="sub">${esc(trip.subtitle)}</div>
       </div>
-      <div class="count">${countdown()}</div>
+      <div class="top-right">
+        <div class="count">${countdown()}</div>
+        <div class="lang" role="group" aria-label="Language / Limba">
+          <button data-lang="en" class="${lang === 'en' ? 'is-active' : ''}" aria-pressed="${lang === 'en'}">EN</button><button data-lang="ro" class="${lang === 'ro' ? 'is-active' : ''}" aria-pressed="${lang === 'ro'}">RO</button>
+        </div>
+      </div>
     </header>
     <main>${body}</main>
-    <nav class="tabs" aria-label="Sections">
-      <a href="#plan/${view.name === 'plan' || view.name === 'about' ? view.date : defaultDay()}" class="${view.name === 'plan' || view.name === 'about' ? 'is-active' : ''}"><span>🗓️</span>Plan</a>
-      <a href="#map" class="${view.name === 'map' ? 'is-active' : ''}"><span>🗺️</span>Map</a>
-      <a href="#explore" class="${view.name === 'explore' ? 'is-active' : ''}"><span>📍</span>Explore</a>
-      <a href="#tips" class="${view.name === 'tips' ? 'is-active' : ''}"><span>💡</span>Tips</a>
+    <nav class="tabs" aria-label="${t('Sections', 'Secțiuni')}">
+      <a href="#plan/${view.name === 'plan' || view.name === 'about' ? view.date : defaultDay()}" class="${view.name === 'plan' || view.name === 'about' ? 'is-active' : ''}"><span>🗓️</span>${t('Plan', 'Plan')}</a>
+      <a href="#map" class="${view.name === 'map' ? 'is-active' : ''}"><span>🗺️</span>${t('Map', 'Hartă')}</a>
+      <a href="#explore" class="${view.name === 'explore' ? 'is-active' : ''}"><span>📍</span>${t('Explore', 'Explorează')}</a>
+      <a href="#tips" class="${view.name === 'tips' ? 'is-active' : ''}"><span>💡</span>${t('Tips', 'Sfaturi')}</a>
     </nav>`;
   app.querySelector('.chip.is-active')?.scrollIntoView({ inline: 'center', block: 'nearest' });
   if (view.name === 'map') initMap();
@@ -664,6 +678,14 @@ function scrollToNow() {
 
 app.addEventListener('click', (e) => {
   const t = e.target as HTMLElement;
+  const lb = t.closest<HTMLButtonElement>('[data-lang]');
+  if (lb) {
+    setLang(lb.dataset.lang === 'ro' ? 'ro' : 'en');
+    const y = window.scrollY;
+    render();
+    window.scrollTo(0, y);
+    return;
+  }
   const md = t.closest<HTMLButtonElement>('[data-mapday]');
   if (md) {
     mapDay = md.dataset.mapday!;
