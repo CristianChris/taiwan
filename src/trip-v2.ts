@@ -94,7 +94,7 @@ export const daysV2: Day[] = [
         time: '14:15',
         title: 'Shenji New Village (審計新村)',
         details:
-          'If you still have energy: a lane of old staff houses turned into cafés, design shops and weekend market stalls. Back to the Second Market by 16:00.',
+          'If you still have energy: a lane of old staff houses turned into cafés, design shops and weekend market stalls. Back to the Second Market by 16:00. Or swap this for a massage near Miyahara (💆 on the map).',
         map: '審計新村',
         at: [24.1446, 120.6628],
         optional: true,
@@ -201,11 +201,10 @@ export const daysV2: Day[] = [
       },
       {
         time: '16:00',
-        title: 'Check in at 嵩茂渡假中心',
+        title: 'Check in at 嵩茂渡假中心 (not booked yet)',
         details: 'Up Highway 18 into the tea country. Drop the bags and head straight out to the tea trails.',
         map: '嵩茂渡假中心',
         at: [23.4711, 120.7064],
-        booked: true,
         getThere: { mode: 'car', how: 'Hwy 159 → Hwy 18 (Alishan Hwy) east → Shizhuo', duration: '≈1h15 (≈50 km)', from: 'Chiayi Station', to: '嵩茂渡假中心' },
       },
       {
@@ -234,10 +233,10 @@ export const daysV2: Day[] = [
       map: '嵩茂渡假中心',
       at: [23.4711, 120.7064],
       address: 'Leye Village, Alishan Township, Chiayi County (Shizhuo area)',
-      note: 'In the tea country at ≈1,300 m, steps from the Mist Trail and the tea terraces. Saiji Tea House is next door.',
-      booked: true,
+      note: 'NOT BOOKED YET. This is the planned hotel: in the tea country at ≈1,300 m, steps from the Mist Trail and the tea terraces, with Saiji Tea House next door. Book it soon, or pick another stay in Shizhuo or Fenqihu.',
       checkIn: '15:00',
       checkOut: '11:00',
+      timesGuess: true,
     },
   },
   // ── Day 3 ──

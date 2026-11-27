@@ -4,6 +4,7 @@ import L from 'leaflet';
 import { about, RATINGS_CHECKED } from './about';
 import { DRONE, DRONE_LABEL, DRONE_CHECKED } from './drone';
 import { PARKING, PARKING_CHECKED } from './parking';
+import { MASSAGE, MASSAGE_CHECKED } from './massage';
 import { trip, flights, places, tips, type Leg, type Stop, type Stay, type Day, type Mode } from './trip';
 import { versions } from './versions';
 import drivesData from './drives.json';
@@ -217,6 +218,18 @@ function parkingHtml(map?: string, long = false) {
     <a class="btn" href="${parkNav(p.at)}" target="_blank" rel="noopener">🚗 Navigate to parking ↗</a></div></div>`;
 }
 
+function massageHtml(date: string) {
+  const list = MASSAGE.filter((x) => x.day === date);
+  if (!list.length) return '';
+  return `<section class="massage"><h3>💆 Massage ideas today</h3><ul>${list
+    .map(
+      (x) => `<li><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(x.q)}" target="_blank" rel="noopener"><strong>${esc(x.name)}</strong></a>${
+        x.rating ? ` <span class="muted small">${x.rating.toFixed(1)}★ (${x.reviews!.toLocaleString('en')})</span>` : ''
+      }<br><span class="small">${esc(x.note)}</span></li>`,
+    )
+    .join('')}</ul><div class="about-note">💆 pins on the map. Google ratings checked ${MASSAGE_CHECKED}. A 60-minute foot or body massage is usually about NT$800–1,500; call or message ahead, Saturdays get busy.</div></section>`;
+}
+
 function stayHtml(st: Stay) {
   const badge = st.booked ? '<span class="badge badge-booked">booked</span>' : '<span class="badge badge-guess">to book</span>';
   return `
@@ -284,7 +297,11 @@ function aboutView(date: string, i: number) {
       ${ratingHtml(s.map, true)}
       ${a?.rating ? `<div class="about-note">Google rating checked ${RATINGS_CHECKED}. Tap it to read the reviews.</div>` : ''}
       ${a ? `<h3>About</h3><p>${esc(a.about)}</p>` : ''}
-      ${DRONE[s.map ?? ''] ? `<h3>Drone</h3>${droneHtml(s.map, true)}<div class="about-note">Checked ${DRONE_CHECKED}. Always check the CAA drone map on the day — see Tips → Drone rules.</div>` : ''}
+      ${DRONE[s.map ?? ''] ? `<h3>Drone</h3>${droneHtml(s.map, true)}${
+        DRONE[s.map ?? '']!.status !== 'no'
+          ? `<div class="stop-actions"><a class="btn" href="https://drone.caa.gov.tw/" target="_blank" rel="noopener">🗺️ Open the CAA drone map ↗</a></div>`
+          : ''
+      }<div class="about-note">Checked ${DRONE_CHECKED}. Always check the CAA drone map on the day — see Tips → Drone rules.</div>` : ''}
       ${PARKING[s.map ?? ''] ? `<h3>Parking</h3>${parkingHtml(s.map, true)}<div class="about-note">Car park found ${PARKING_CHECKED}. Prices marked “about” are typical rates: check the sign at the gate. See Tips → Parking.</div>` : ''}
       <h3>In your plan</h3>
       <p>${esc(s.details)}</p>
@@ -356,12 +373,13 @@ function planView(date: string) {
       </header>
       ${flightCard}
       <div id="daymap" class="day-map" role="region" aria-label="Map of day ${idx + 1}"></div>
-      <div class="map-legend"><span class="p-icon">P</span> Blue P = where to park the car. Tap it for the price, how to pay and directions. Zoom in where pins overlap.</div>
+      <div class="map-legend"><span class="p-icon">P</span> Blue P = where to park the car. Tap it for the price, how to pay and directions.${MASSAGE.some((x) => x.day === day.date) ? ' 💆 = massage idea.' : ''} Zoom in where pins overlap.</div>
       <div class="timeline">${(() => {
         const nums = stopNumbers(day);
         const c = DAY_COLORS[idx % DAY_COLORS.length];
         return day.stops.map((s, i) => stopHtml(s, i, i === nowIdx, nums[i], c, day.date)).join('');
       })()}</div>
+      ${massageHtml(day.date)}
       ${day.stay ? stayHtml(day.stay) : ''}
       ${
         day.alternatives?.length
@@ -562,6 +580,17 @@ function initMap(id = 'map', only = mapDay) {
           `<strong>🅿️ ${esc(p.name)}</strong><br>For: ${p.for.map(esc).join(', ')}<br>💰 ${esc(p.price)}<br>💳 ${esc(p.pay)}<br><a href="${parkNav(p.at)}" target="_blank" rel="noopener">Navigate to parking ↗</a>`,
         );
       bounds.push(p.at);
+    });
+    MASSAGE.filter((x) => x.day === d.date).forEach((x) => {
+      L.marker(x.at, {
+        icon: L.divIcon({ className: 'spa-pin', html: '<span>💆</span>', iconSize: [0, 0] }),
+        zIndexOffset: -800, // under the numbered stop pins
+      })
+        .addTo(m)
+        .bindPopup(
+          `<strong>💆 ${esc(x.name)}</strong>${x.rating ? `<br>${x.rating.toFixed(1)}★ (${x.reviews!.toLocaleString('en')})` : ''}<br>${esc(x.note)}<br><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(x.q)}" target="_blank" rel="noopener">Google Maps ↗</a>`,
+        );
+      if (only !== 'all') bounds.push(x.at);
     });
     if (path.length > 1) L.polyline(path, { color, weight: 3, opacity: 0.8, dashArray: '6 6' }).addTo(m);
   });

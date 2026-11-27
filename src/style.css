@@ -441,3 +441,15 @@ main {
 .map-legend { display: flex; gap: 6px; align-items: center; font-size: 0.8rem; color: var(--muted); margin: -4px 2px 12px; }
 
 .stay-times { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 6px 0; font-size: 0.92rem; }
+
+.spa-pin { background: none; border: 0; }
+.spa-pin span {
+  position: absolute; transform: translate(-50%, -50%);
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px; border-radius: 50%; background: #fff; font-size: 15px;
+  border: 2px solid #c2185b; box-shadow: 0 1px 4px rgba(0,0,0,.35);
+}
+.massage { margin: 16px 0; padding: 14px 16px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card, #fff); }
+.massage h3 { margin: 0 0 8px; }
+.massage ul { margin: 0; padding-left: 18px; }
+.massage li { margin: 0 0 8px; }
